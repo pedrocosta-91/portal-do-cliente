@@ -1,0 +1,35 @@
+# Dependencies
+node_modules
+
+# Build
+dist
+dist-ssr
+*.local
+
+# Logs / debug
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Claude / Cursor local (caminhos da máquina)
+.claude/settings.local.json
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea
+.vscode/*
+!.vscode/extensions.json
+
+# Env (não commitar segredos)
+.env
+.env.*.local
+
+# Vite
+.vite
+
+# Test / coverage
+coverage
