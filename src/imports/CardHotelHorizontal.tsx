@@ -58,7 +58,7 @@ function Group() {
 function Frame2() {
   return (
     <div className="content-stretch flex gap-[8px] items-center relative shrink-0">
-      <div className="bg-[#3e63dd] content-stretch flex gap-[6px] items-center justify-center overflow-clip px-[6px] py-[2px] relative shrink-0" data-name="Badge">
+      <div className="bg-[#12a594] content-stretch flex gap-[6px] items-center justify-center overflow-clip px-[6px] py-[2px] relative shrink-0" data-name="Badge">
         <div className="flex flex-col font-['Poppins:Medium',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[12px] text-white tracking-[0.04px] whitespace-nowrap">
           <p className="leading-[16px]">8.4</p>
         </div>
@@ -290,7 +290,7 @@ function HotelPriceContainer() {
       <div className="flex flex-col items-end justify-center size-full">
         <div className="content-stretch flex flex-col gap-[32px] items-end justify-center p-[16px] relative size-full">
           <PriceSection />
-          <div className="bg-[#3e63dd] h-[32px] relative rounded-[9999px] shrink-0 w-full" data-name="Button">
+          <div className="bg-[#12a594] h-[32px] relative rounded-[9999px] shrink-0 w-full" data-name="Button">
             <div className="flex flex-row items-center justify-center size-full">
               <div className="content-stretch flex gap-[8px] items-center justify-center px-[12px] relative size-full">
                 <div className="flex flex-col font-['Poppins:Medium',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[14px] text-white whitespace-nowrap">

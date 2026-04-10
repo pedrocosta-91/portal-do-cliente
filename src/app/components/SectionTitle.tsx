@@ -97,7 +97,7 @@ export function SectionTitle({
                 onClick={() => onTabChange?.(tab)}
                 className={`flex gap-2 h-8 items-center justify-center px-3 relative rounded-full transition-colors ${
                   isActive 
-                    ? 'bg-[rgba(0,71,241,0.07)] border border-[rgba(0,52,220,0.45)]' 
+                    ? 'bg-[rgba(18,165,148,0.1)] border border-[rgba(18,165,148,0.45)]'
                     : 'border border-[#d9d9e0] hover:bg-muted'
                 }`}
               >
@@ -110,8 +110,8 @@ export function SectionTitle({
                             <path 
                               key={index} 
                               d={path} 
-                              fill={isActive ? "rgba(0,43,183,0.77)" : "#60646C"}
-                              fillOpacity={isActive ? 0.772549 : 1}
+                              fill={isActive ? "#12a594" : "#60646C"}
+                              fillOpacity={1}
                             />
                           ))}
                         </g>
@@ -120,7 +120,7 @@ export function SectionTitle({
                   </div>
                 )}
                 <span className={`text-sm font-medium leading-5 ${
-                  isActive ? 'text-[rgba(0,43,183,0.77)]' : 'text-muted-foreground'
+                  isActive ? 'text-[#12a594]' : 'text-muted-foreground'
                 }`}>
                   {tab}
                 </span>

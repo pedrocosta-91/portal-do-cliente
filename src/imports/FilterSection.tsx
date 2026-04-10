@@ -205,7 +205,7 @@ function Thumb1() {
 
 function Range() {
   return (
-    <div className="-translate-y-1/2 absolute bg-[#3e63dd] h-[6px] left-[12.33%] right-[12.67%] top-1/2" data-name="range">
+    <div className="-translate-y-1/2 absolute bg-[#12a594] h-[6px] left-[12.33%] right-[12.67%] top-1/2" data-name="range">
       <div aria-hidden="true" className="absolute border border-[rgba(0,9,50,0.12)] border-solid inset-0 pointer-events-none" />
       <Thumb />
       <Thumb1 />
@@ -328,7 +328,7 @@ function ContentContainer2() {
 
 function Checkbox() {
   return (
-    <div className="bg-[#3e63dd] content-stretch flex items-center justify-center overflow-clip relative shrink-0 size-[16px]" data-name="checkbox">
+    <div className="bg-[#12a594] content-stretch flex items-center justify-center overflow-clip relative shrink-0 size-[16px]" data-name="checkbox">
       <div className="bg-[rgba(255,255,255,0)] flex-[1_0_0] h-full min-h-px min-w-px relative" data-name="Abstract / check">
         <div className="absolute inset-[24.17%_21.67%_24.17%_23.33%]" data-name="Vector">
           <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 8.80008 8.26673">

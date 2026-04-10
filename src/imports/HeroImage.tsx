@@ -122,7 +122,7 @@ function Frame1() {
   return (
     <div className="bg-[rgba(255,255,255,0.9)] content-stretch flex gap-[16px] items-center p-[8px] relative rounded-[9999px] shrink-0">
       <div aria-hidden="true" className="absolute border border-[#d9d9e0] border-solid inset-0 pointer-events-none rounded-[9999px]" />
-      <div className="bg-[#3e63dd] content-stretch flex flex-col items-center justify-center overflow-clip relative rounded-[9999px] shrink-0 size-[40px]" data-name="Avatar">
+      <div className="bg-[#12a594] content-stretch flex flex-col items-center justify-center overflow-clip relative rounded-[9999px] shrink-0 size-[40px]" data-name="Avatar">
         <div className="bg-[rgba(255,255,255,0)] relative shrink-0 size-[16px]" data-name="Objects / person">
           <div className="absolute inset-[5.83%_13.5%_6.17%_13.5%]" data-name="Vector">
             <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 11.68 14.0799">
@@ -344,7 +344,7 @@ function SearchButton() {
       <DateField />
       <PassengerField />
       <PassengerField1 />
-      <div className="bg-[#3e63dd] content-stretch flex gap-[12px] h-[40px] items-center justify-center px-[16px] relative rounded-[9999px] shrink-0" data-name="Button">
+      <div className="bg-[#12a594] content-stretch flex gap-[12px] h-[40px] items-center justify-center px-[16px] relative rounded-[9999px] shrink-0" data-name="Button">
         <div className="flex flex-col font-['Poppins:Medium',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[16px] text-white whitespace-nowrap">
           <p className="leading-[24px]">Buscar hotéis</p>
         </div>

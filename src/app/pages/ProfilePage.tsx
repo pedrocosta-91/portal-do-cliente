@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { Separator } from "../components/ui/separator";
@@ -7,6 +7,8 @@ import { AddTravelerModal } from "../components/AddTravelerModal";
 import {
   Plus,
   MoreVertical,
+  Pencil,
+  Trash2,
   PlaneTakeoff,
   PlaneLanding,
   Building2,
@@ -238,22 +240,60 @@ function MastercardIcon() {
 }
 
 function PaymentCardItem({ card }: { card: PaymentCard }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    function handleClickOutside(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen]);
+
   return (
-    <div className="bg-card flex items-center justify-between p-4 rounded-lg shadow-[0px_4px_16px_0px_rgba(0,0,0,0.1),0px_3px_12px_0px_rgba(0,0,0,0.1),0px_2px_3px_0px_rgba(0,0,51,0.06)] w-full">
-      <div className="flex gap-2 items-center">
-        <MastercardIcon />
-        <div className="flex flex-col items-start">
-          <span className="text-[14px] font-normal leading-5 text-muted-foreground whitespace-nowrap">
-            {card.brand} {card.type}
-          </span>
-          <span className="text-[14px] font-normal leading-5 text-foreground whitespace-nowrap">
-            ****{card.lastFour}
-          </span>
+    <div ref={containerRef} className="flex items-center gap-2 w-full">
+      {/* Card */}
+      <div className="bg-card flex items-center justify-between p-4 rounded-lg shadow-[0px_4px_16px_0px_rgba(0,0,0,0.1),0px_3px_12px_0px_rgba(0,0,0,0.1),0px_2px_3px_0px_rgba(0,0,51,0.06)] flex-1 min-w-0 transition-all duration-200">
+        <div className="flex gap-2 items-center min-w-0">
+          <MastercardIcon />
+          <div className="flex flex-col items-start">
+            <span className="text-[14px] font-normal leading-5 text-muted-foreground whitespace-nowrap">
+              {card.brand} {card.type}
+            </span>
+            <span className="text-[14px] font-normal leading-5 text-foreground whitespace-nowrap">
+              ****{card.lastFour}
+            </span>
+          </div>
         </div>
+        <button
+          onClick={() => setIsOpen(true)}
+          className={`flex items-center justify-center rounded-full size-6 hover:bg-muted transition-all duration-200 shrink-0 ${
+            isOpen ? "opacity-0 w-0 overflow-hidden pointer-events-none" : "opacity-100"
+          }`}
+        >
+          <MoreVertical size={16} className="text-muted-foreground" strokeWidth={1.5} />
+        </button>
       </div>
-      <button className="flex items-center justify-center rounded-[3px] size-6 hover:bg-muted transition-colors">
-        <MoreVertical size={16} className="text-muted-foreground" strokeWidth={1.5} />
-      </button>
+
+      {/* Action buttons — slide in from right */}
+      <div
+        className="flex gap-1 items-center shrink-0 overflow-hidden transition-all duration-200"
+        style={{ maxWidth: isOpen ? "72px" : "0px", opacity: isOpen ? 1 : 0 }}
+      >
+        <button className="flex items-center justify-center rounded-full size-8 hover:bg-muted transition-colors">
+          <Pencil size={16} className="text-muted-foreground" strokeWidth={1.5} />
+        </button>
+        <button
+          className="flex items-center justify-center rounded-full size-8 hover:bg-muted transition-colors"
+          onClick={() => setIsOpen(false)}
+        >
+          <Trash2 size={16} className="text-muted-foreground" strokeWidth={1.5} />
+        </button>
+      </div>
     </div>
   );
 }

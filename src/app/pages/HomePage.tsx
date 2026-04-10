@@ -1,4 +1,4 @@
-import { Header } from "../components/Header";
+import { Header, NavCategory } from "../components/Header";
 import { SearchSection } from "../components/SearchSection";
 import { HotelCard } from "../components/HotelCard";
 import { Footer } from "../components/Footer";
@@ -12,6 +12,8 @@ const imgHeroImage = "/hero-image.jpg";
 export default function HomePage() {
   const [activeTab, setActiveTab] = useState("Todos");
   const [activeFlightTab, setActiveFlightTab] = useState("Todos");
+  const [searchTab, setSearchTab] = useState<"Hospedagem" | "Passagem aérea">("Hospedagem");
+  const navCategory: NavCategory = searchTab === "Passagem aérea" ? "passagens" : "hospedagem";
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: "start", loop: true, watchDrag: false });
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
@@ -223,9 +225,13 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/40" />
         </div>
         <div className="relative z-10 flex flex-col justify-between min-h-[700px]">
-          <Header />
+          <Header
+            onHospedagensClick={() => setSearchTab("Hospedagem")}
+            onPassagensClick={() => setSearchTab("Passagem aérea")}
+            activeCategory={navCategory}
+          />
           <div className="pb-8">
-            <SearchSection />
+            <SearchSection tab={searchTab} />
           </div>
         </div>
       </div>

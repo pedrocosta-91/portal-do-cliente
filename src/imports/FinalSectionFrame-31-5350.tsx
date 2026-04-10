@@ -272,7 +272,7 @@ function FinalImage() {
       </div>
       <div aria-hidden="true" className="absolute border border-[#d9d9e0] border-solid inset-0 pointer-events-none" />
       <FinalTextFrame />
-      <div className="bg-[#3e63dd] content-stretch flex gap-[8px] h-[32px] items-center justify-center px-[12px] relative rounded-[9999px] shrink-0" data-name="Button">
+      <div className="bg-[#12a594] content-stretch flex gap-[8px] h-[32px] items-center justify-center px-[12px] relative rounded-[9999px] shrink-0" data-name="Button">
         <div className="flex flex-col font-['Poppins:Medium',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[14px] text-white whitespace-nowrap">
           <p className="leading-[20px]">Pesquisar Passagens</p>
         </div>

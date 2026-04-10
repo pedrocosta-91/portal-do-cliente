@@ -90,9 +90,13 @@ interface DestinationSuggestions {
 const TABS = ["Hospedagem", "Passagem aérea", "Aluguel de carro"] as const;
 type Tab = typeof TABS[number];
 
-export function SearchSection() {
+export function SearchSection({ tab }: { tab?: Tab } = {}) {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<Tab>("Hospedagem");
+  const [activeTab, setActiveTab] = useState<Tab>(tab ?? "Hospedagem");
+
+  useEffect(() => {
+    if (tab) setActiveTab(tab);
+  }, [tab]);
 
   // ── Estado: Hospedagem ──────────────────────────────────────────────────────
   const [destination, setDestination] = useState("");
@@ -222,7 +226,7 @@ export function SearchSection() {
             }`}
           >
             <span className={`text-[16px] leading-[24px] tracking-[0px] ${
-              isActive ? "font-medium text-[#3358d4]" : "font-normal text-[#60646c]"
+              isActive ? "font-medium text-[#12a594]" : "font-normal text-[#60646c]"
             }`}>
               {tab}
             </span>

@@ -3,7 +3,7 @@ import imgFeaturedItem from "figma:asset/24a50d365595fec477b513b97d5756b88590b31
 
 function ContentContainer() {
   return (
-    <div className="bg-[#3e63dd] content-stretch flex items-center justify-center overflow-clip relative rounded-[9999px] shrink-0 size-[48px]" data-name="content-container">
+    <div className="bg-[#12a594] content-stretch flex items-center justify-center overflow-clip relative rounded-[9999px] shrink-0 size-[48px]" data-name="content-container">
       <div className="bg-[rgba(255,255,255,0)] relative shrink-0 size-[20px]" data-name="Objects / heart">
         <div className="absolute inset-[9.02%]" data-name="Vector">
           <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 16.3935 16.3935">
@@ -63,7 +63,7 @@ function RatingsFrameInner() {
 function FeaturedItemRatingsFrame() {
   return (
     <div className="content-stretch flex gap-[8px] items-center relative shrink-0 w-full" data-name="Featured Item Ratings Frame">
-      <div className="bg-[#3e63dd] content-stretch flex gap-[6px] items-center justify-center overflow-clip px-[6px] py-[2px] relative shrink-0" data-name="Badge">
+      <div className="bg-[#12a594] content-stretch flex gap-[6px] items-center justify-center overflow-clip px-[6px] py-[2px] relative shrink-0" data-name="Badge">
         <div className="flex flex-col font-['Poppins:Medium',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[12px] text-white tracking-[0.04px] whitespace-nowrap">
           <p className="leading-[16px]">7,1</p>
         </div>

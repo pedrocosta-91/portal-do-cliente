@@ -70,7 +70,7 @@ export function BrandLogo() {
 // Route → active category mapping
 // ---------------------------------------------------------------------------
 
-type NavCategory = "hospedagem" | "passagens" | "carros" | null;
+export type NavCategory = "hospedagem" | "passagens" | "carros" | null;
 
 const HOSPEDAGEM_ROUTES = ["/", "/resultados", "/hotel", "/pagamento", "/confirmacao-hotel"];
 const PASSAGENS_ROUTES = ["/resultados-aereo", "/pagamento-aereo", "/confirmacao-aereo"];
@@ -89,8 +89,17 @@ function useActiveCategory(): NavCategory {
 const ACTIVE_COLOR = "#008573";
 const INACTIVE_COLOR = "#60646c";
 
-function Navigation() {
-  const active = useActiveCategory();
+function Navigation({
+  onHospedagensClick,
+  onPassagensClick,
+  activeOverride,
+}: {
+  onHospedagensClick?: () => void;
+  onPassagensClick?: () => void;
+  activeOverride?: NavCategory;
+}) {
+  const activeFromRoute = useActiveCategory();
+  const active = activeOverride ?? activeFromRoute;
 
   const ic = (cat: NavCategory) => (active === cat ? ACTIVE_COLOR : INACTIVE_COLOR);
 
@@ -98,7 +107,7 @@ function Navigation() {
     <div className="bg-[#fcfcfd] flex items-center justify-center px-4 py-[14px] rounded-full shadow-[0px_4px_16px_0px_rgba(0,0,0,0.1),0px_3px_12px_0px_rgba(0,0,0,0.1),0px_2px_3px_0px_rgba(0,0,51,0.06)]">
       <div className="flex gap-[10px] items-center">
         {/* Hospedagens */}
-        <button className="flex gap-2 h-8 items-center justify-center px-3 rounded hover:bg-muted transition-colors">
+        <button onClick={onHospedagensClick} className="flex gap-2 h-8 items-center justify-center px-3 rounded hover:bg-muted transition-colors">
           <div className="overflow-clip relative shrink-0 size-4">
             <div className="absolute inset-[5.21%_13.54%]">
               <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 11.6667 14.3335">
@@ -126,7 +135,7 @@ function Navigation() {
         </button>
 
         {/* Passagens */}
-        <button className="flex gap-2 h-8 items-center justify-center px-3 rounded hover:bg-muted transition-colors">
+        <button onClick={onPassagensClick} className="flex gap-2 h-8 items-center justify-center px-3 rounded hover:bg-muted transition-colors">
           <div className="overflow-clip relative shrink-0 size-4">
             <div className="absolute inset-[8.72%_5.21%_9.37%_5.21%]">
               <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 14.3333 13.1054">
@@ -247,7 +256,15 @@ export function UserActions({
 // Header
 // ---------------------------------------------------------------------------
 
-export function Header() {
+export function Header({
+  onHospedagensClick,
+  onPassagensClick,
+  activeCategory,
+}: {
+  onHospedagensClick?: () => void;
+  onPassagensClick?: () => void;
+  activeCategory?: NavCategory;
+} = {}) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const isProfileSection = pathname.startsWith("/minha-conta");
@@ -259,7 +276,11 @@ export function Header() {
       <button onClick={() => navigate("/")} className="shrink-0 hover:opacity-80 transition-opacity">
         <BrandLogo />
       </button>
-      <Navigation />
+      <Navigation
+        onHospedagensClick={onHospedagensClick}
+        onPassagensClick={onPassagensClick}
+        activeOverride={activeCategory}
+      />
       <UserActions avatarColor={avatarColor} bellColor={bellColor} />
     </div>
   );

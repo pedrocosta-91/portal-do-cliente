@@ -450,7 +450,7 @@ function Frame3() {
       <div className="content-stretch flex flex-col gap-[16px] items-start p-[16px] relative w-full">
         <Frame47 />
         <Frame11 />
-        <div className="bg-[#3e63dd] content-stretch flex gap-[12px] h-[40px] items-center justify-center px-[16px] relative rounded-[9999px] shrink-0 w-[240px]" data-name="Button">
+        <div className="bg-[#12a594] content-stretch flex gap-[12px] h-[40px] items-center justify-center px-[16px] relative rounded-[9999px] shrink-0 w-[240px]" data-name="Button">
           <div className="flex flex-col font-['Poppins:Medium',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[16px] text-white whitespace-nowrap">
             <p className="leading-[24px]">Próximo</p>
           </div>
@@ -816,7 +816,7 @@ function Thumb() {
 
 function Range() {
   return (
-    <div className="-translate-y-1/2 absolute bg-[#3e63dd] h-[6px] left-0 right-3/4 top-1/2" data-name="range">
+    <div className="-translate-y-1/2 absolute bg-[#12a594] h-[6px] left-0 right-3/4 top-1/2" data-name="range">
       <div aria-hidden="true" className="absolute border border-[rgba(0,9,50,0.12)] border-solid inset-0 pointer-events-none" />
       <Thumb />
     </div>
@@ -1294,7 +1294,7 @@ function Frame9() {
         <Frame40 />
         <Frame10 />
         <Frame35 />
-        <div className="bg-[#3e63dd] content-stretch flex gap-[12px] h-[40px] items-center justify-center px-[16px] relative rounded-[9999px] shrink-0 w-[240px]" data-name="Button">
+        <div className="bg-[#12a594] content-stretch flex gap-[12px] h-[40px] items-center justify-center px-[16px] relative rounded-[9999px] shrink-0 w-[240px]" data-name="Button">
           <div className="flex flex-col font-['Poppins:Medium',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[16px] text-white whitespace-nowrap">
             <p className="leading-[24px]">Próximo</p>
           </div>
@@ -1574,7 +1574,7 @@ function Frame4() {
       <Frame8 />
       <Frame9 />
       <Frame12 />
-      <div className="bg-[#3e63dd] content-stretch flex gap-[12px] h-[40px] items-center justify-center px-[16px] relative rounded-[9999px] shrink-0 w-[240px]" data-name="Button">
+      <div className="bg-[#12a594] content-stretch flex gap-[12px] h-[40px] items-center justify-center px-[16px] relative rounded-[9999px] shrink-0 w-[240px]" data-name="Button">
         <div className="flex flex-col font-['Poppins:Medium',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[16px] text-white whitespace-nowrap">
           <p className="leading-[24px]">Efetuar Reserva</p>
         </div>
