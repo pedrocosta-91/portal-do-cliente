@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router";
 import svgPaths from "../../imports/svg-prp94fobv4";
 import { BedDouble, MapPin } from "lucide-react";
+import { UserActions } from "./Header";
 import { format } from "date-fns";
 import { pt } from "date-fns/locale";
 import type { DateRange } from "react-day-picker";
@@ -679,20 +681,14 @@ function ContentContainer1() {
 }
 
 export function SearchResultsHeader({ destination, dateRange, guests, adultos, criancas, bebes, rooms, nights, checkIn, checkOut, onEdit, onDatesChange, onGuestsChange, onDestinationChange }: SearchResultsHeaderProps) {
+  const navigate = useNavigate();
   return (
     <div className="content-stretch flex items-center justify-between p-[32px] relative size-full" data-name="Header">
-      <BrandLogo />
+      <button onClick={() => navigate("/")} className="shrink-0 hover:opacity-80 transition-opacity">
+        <BrandLogo />
+      </button>
       <SearchContainer destination={destination} dateRange={dateRange} guests={guests} adultos={adultos} criancas={criancas} bebes={bebes} rooms={rooms} nights={nights} checkIn={checkIn} checkOut={checkOut} onEdit={onEdit} onDatesChange={onDatesChange} onGuestsChange={onGuestsChange} onDestinationChange={onDestinationChange} />
-      <div className="content-stretch flex gap-[12px] items-center relative shrink-0" data-name="User Actions">
-        <div className="bg-[#12a594] content-stretch flex gap-[12px] h-[40px] items-center justify-center px-[16px] relative rounded-[9999px] shrink-0 hover:bg-[#0f8c7d] transition-colors cursor-pointer" data-name="Button">
-          <div className="flex flex-col justify-center leading-[0] not-italic relative shrink-0 text-[16px] text-white whitespace-nowrap">
-            <p className="leading-[24px]">Criar conta / Login</p>
-          </div>
-        </div>
-        <div className="bg-[rgba(255,255,255,0)] content-stretch flex flex-col items-start relative shrink-0" data-name="Icon Button">
-          <ContentContainer1 />
-        </div>
-      </div>
+      <UserActions />
     </div>
   );
 }

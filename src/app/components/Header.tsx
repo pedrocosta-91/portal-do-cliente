@@ -1,4 +1,10 @@
+import { useLocation, useNavigate } from "react-router";
+import { Bell } from "lucide-react";
 import svgPaths from "../../imports/svg-4cv1bqd2th";
+
+// ---------------------------------------------------------------------------
+// Brand logo (unchanged)
+// ---------------------------------------------------------------------------
 
 export function BrandLogo() {
   return (
@@ -60,74 +66,141 @@ export function BrandLogo() {
   );
 }
 
+// ---------------------------------------------------------------------------
+// Route → active category mapping
+// ---------------------------------------------------------------------------
+
+type NavCategory = "hospedagem" | "passagens" | "carros" | null;
+
+const HOSPEDAGEM_ROUTES = ["/", "/resultados", "/hotel", "/pagamento", "/confirmacao-hotel"];
+const PASSAGENS_ROUTES = ["/resultados-aereo", "/pagamento-aereo", "/confirmacao-aereo"];
+
+function useActiveCategory(): NavCategory {
+  const { pathname } = useLocation();
+  if (HOSPEDAGEM_ROUTES.includes(pathname)) return "hospedagem";
+  if (PASSAGENS_ROUTES.includes(pathname)) return "passagens";
+  return null;
+}
+
+// ---------------------------------------------------------------------------
+// Navigation
+// ---------------------------------------------------------------------------
+
+const ACTIVE_COLOR = "#008573";
+const INACTIVE_COLOR = "#60646c";
+
 function Navigation() {
+  const active = useActiveCategory();
+
+  const ic = (cat: NavCategory) => (active === cat ? ACTIVE_COLOR : INACTIVE_COLOR);
+
   return (
-    <div className="bg-[#fcfcfd] flex items-center justify-center px-4 py-[14px] rounded-full shadow-lg">
+    <div className="bg-[#fcfcfd] flex items-center justify-center px-4 py-[14px] rounded-full shadow-[0px_4px_16px_0px_rgba(0,0,0,0.1),0px_3px_12px_0px_rgba(0,0,0,0.1),0px_2px_3px_0px_rgba(0,0,51,0.06)]">
       <div className="flex gap-[10px] items-center">
-        <button className="flex gap-2 h-8 items-center justify-center px-3 rounded hover:bg-muted transition-colors">
-          <div className="overflow-clip relative shrink-0 size-4">
-            <div className="absolute inset-[8.72%_5.21%_9.37%_5.21%]">
-              <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 14.3333 13.1054">
-                <g>
-                  <path d={svgPaths.p2ba5e100} fill="#60646C" />
-                  <path d={svgPaths.p22fc7f00} fill="#60646C" />
-                  <path d={svgPaths.pcc90e80} fill="#60646C" />
-                  <path d={svgPaths.p28bf6000} fill="#60646C" />
-                  <path d={svgPaths.p24b26780} fill="#60646C" />
-                  <path d={svgPaths.p2184ce00} fill="#60646C" />
-                  <path d={svgPaths.p364dc270} fill="#60646C" />
-                </g>
-              </svg>
-            </div>
-          </div>
-          <span className="text-sm text-[#60646c]">Passagens</span>
-        </button>
+        {/* Hospedagens */}
         <button className="flex gap-2 h-8 items-center justify-center px-3 rounded hover:bg-muted transition-colors">
           <div className="overflow-clip relative shrink-0 size-4">
             <div className="absolute inset-[5.21%_13.54%]">
               <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 11.6667 14.3335">
                 <g>
-                  <path d={svgPaths.peba4a00} fill="#008573" />
-                  <path d={svgPaths.p1468ef00} fill="#008573" />
-                  <path d={svgPaths.p1c183e80} fill="#008573" />
-                  <path d={svgPaths.p23989270} fill="#008573" />
-                  <path d={svgPaths.p7f8a100} fill="#008573" />
-                  <path d={svgPaths.p1eaf1300} fill="#008573" />
-                  <path d={svgPaths.p39a361c0} fill="#008573" />
-                  <path d={svgPaths.p3c52f700} fill="#008573" />
-                  <path d={svgPaths.p4c97580} fill="#008573" />
-                  <path d={svgPaths.p1dbce00} fill="#008573" />
+                  <path d={svgPaths.peba4a00} fill={ic("hospedagem")} />
+                  <path d={svgPaths.p1468ef00} fill={ic("hospedagem")} />
+                  <path d={svgPaths.p1c183e80} fill={ic("hospedagem")} />
+                  <path d={svgPaths.p23989270} fill={ic("hospedagem")} />
+                  <path d={svgPaths.p7f8a100} fill={ic("hospedagem")} />
+                  <path d={svgPaths.p1eaf1300} fill={ic("hospedagem")} />
+                  <path d={svgPaths.p39a361c0} fill={ic("hospedagem")} />
+                  <path d={svgPaths.p3c52f700} fill={ic("hospedagem")} />
+                  <path d={svgPaths.p4c97580} fill={ic("hospedagem")} />
+                  <path d={svgPaths.p1dbce00} fill={ic("hospedagem")} />
                 </g>
               </svg>
             </div>
           </div>
-          <span className="text-sm text-[#008573] font-medium">Hospedagens</span>
+          <span
+            className="text-[14px] leading-5"
+            style={{ color: ic("hospedagem"), fontWeight: active === "hospedagem" ? 500 : 400 }}
+          >
+            Hospedagens
+          </span>
         </button>
+
+        {/* Passagens */}
+        <button className="flex gap-2 h-8 items-center justify-center px-3 rounded hover:bg-muted transition-colors">
+          <div className="overflow-clip relative shrink-0 size-4">
+            <div className="absolute inset-[8.72%_5.21%_9.37%_5.21%]">
+              <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 14.3333 13.1054">
+                <g>
+                  <path d={svgPaths.p2ba5e100} fill={ic("passagens")} />
+                  <path d={svgPaths.p22fc7f00} fill={ic("passagens")} />
+                  <path d={svgPaths.pcc90e80} fill={ic("passagens")} />
+                  <path d={svgPaths.p28bf6000} fill={ic("passagens")} />
+                  <path d={svgPaths.p24b26780} fill={ic("passagens")} />
+                  <path d={svgPaths.p2184ce00} fill={ic("passagens")} />
+                  <path d={svgPaths.p364dc270} fill={ic("passagens")} />
+                </g>
+              </svg>
+            </div>
+          </div>
+          <span
+            className="text-[14px] leading-5"
+            style={{ color: ic("passagens"), fontWeight: active === "passagens" ? 500 : 400 }}
+          >
+            Passagens
+          </span>
+        </button>
+
+        {/* Aluguel de Carros */}
         <button className="flex gap-2 h-8 items-center justify-center px-3 rounded hover:bg-muted transition-colors">
           <div className="overflow-clip relative shrink-0 size-4">
             <div className="absolute inset-[26.04%_5.21%_17.71%_5.21%]">
               <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 14.3333 9">
                 <g>
-                  <path d={svgPaths.p1ce63200} fill="#60646C" />
-                  <path d={svgPaths.p2fce1380} fill="#60646C" />
-                  <path d={svgPaths.p165c80} fill="#60646C" />
-                  <path d={svgPaths.p39c9fa80} fill="#60646C" />
+                  <path d={svgPaths.p1ce63200} fill={ic("carros")} />
+                  <path d={svgPaths.p2fce1380} fill={ic("carros")} />
+                  <path d={svgPaths.p165c80} fill={ic("carros")} />
+                  <path d={svgPaths.p39c9fa80} fill={ic("carros")} />
                 </g>
               </svg>
             </div>
           </div>
-          <span className="text-sm text-[#60646c]">Aluguel de Carros</span>
+          <span
+            className="text-[14px] leading-5"
+            style={{ color: ic("carros"), fontWeight: active === "carros" ? 500 : 400 }}
+          >
+            Aluguel de Carros
+          </span>
         </button>
       </div>
     </div>
   );
 }
 
-function UserProfile() {
+// ---------------------------------------------------------------------------
+// User actions (exported — reusable across hotel/flight/home headers)
+// ---------------------------------------------------------------------------
+
+export function UserActions({
+  avatarColor = "#12a594",
+  bellColor = "#e8e8ec",
+}: {
+  avatarColor?: string;
+  bellColor?: string;
+}) {
+  const navigate = useNavigate();
+
   return (
-    <div className="flex gap-3 items-center">
-      <div className="bg-white/90 flex gap-4 items-center p-2 rounded-full border border-[#d9d9e0]">
-        <div className="bg-[#12a594] flex items-center justify-center overflow-clip rounded-full shrink-0 size-10">
+    <div className="flex gap-3 items-center h-12">
+      {/* User info pill — clickable → profile page */}
+      <button
+        onClick={() => navigate("/minha-conta/perfil")}
+        className="bg-white/90 flex gap-4 items-center p-2 rounded-full border border-[#d9d9e0] hover:bg-[#ebebef] transition-colors cursor-pointer"
+      >
+        {/* Avatar */}
+        <div
+          className="flex items-center justify-center overflow-clip rounded-full shrink-0 size-10"
+          style={{ backgroundColor: avatarColor }}
+        >
           <div className="relative shrink-0 size-4">
             <div className="absolute inset-[5.83%_13.5%_6.17%_13.5%]">
               <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 11.68 14.0799">
@@ -136,8 +209,10 @@ function UserProfile() {
             </div>
           </div>
         </div>
+
+        {/* Greeting + stats */}
         <div className="flex flex-col items-start">
-          <p className="text-xs text-foreground">Olá, Pedro Costa</p>
+          <p className="text-[12px] leading-4 tracking-[0.04px] text-foreground">Olá, Pedro Costa</p>
           <div className="flex gap-2 items-center">
             <div className="overflow-clip relative shrink-0 size-4">
               <div className="absolute inset-[17.71%_5.21%]">
@@ -150,42 +225,42 @@ function UserProfile() {
               </div>
             </div>
             <div className="flex gap-1 items-center">
-              <p className="text-xl font-medium text-foreground">135.000</p>
-              <p className="text-xs text-muted-foreground font-light">Tribz</p>
+              <p className="text-[20px] leading-7 tracking-[-0.08px] font-medium text-foreground">135.000</p>
+              <p className="text-[12px] leading-4 tracking-[0.04px] text-muted-foreground font-light">Tribz</p>
             </div>
           </div>
         </div>
-        <div className="overflow-clip relative shrink-0 size-8">
-          <div className="absolute inset-[21.88%_13.54%]">
-            <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 23.3333 18">
-              <g>
-                <path d={svgPaths.p29422c80} fill="#525252" />
-                <path d={svgPaths.p1e54f700} fill="#525252" />
-                <path d={svgPaths.p37622ef0} fill="#525252" />
-              </g>
-            </svg>
-          </div>
-        </div>
-      </div>
-      <button className="bg-[#f9f9fb] flex items-center justify-center overflow-clip rounded-full shrink-0 size-12 hover:bg-muted transition-colors">
-        <div className="relative shrink-0 size-5">
-          <div className="absolute inset-[1%_13.33%_1.67%_13.33%]">
-            <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 14.6668 19.4661">
-              <path clipRule="evenodd" d={svgPaths.p1cb983f0} fill="#008573" fillRule="evenodd" />
-            </svg>
-          </div>
-        </div>
+      </button>
+
+      {/* Bell button */}
+      <button
+        className="flex items-center justify-center rounded-full shrink-0 size-12 hover:bg-muted transition-colors"
+        style={{ backgroundColor: bellColor }}
+      >
+        <Bell size={20} className="text-foreground" strokeWidth={1.5} />
       </button>
     </div>
   );
 }
 
+// ---------------------------------------------------------------------------
+// Header
+// ---------------------------------------------------------------------------
+
 export function Header() {
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const isProfileSection = pathname.startsWith("/minha-conta");
+  const avatarColor = "#12a594";
+  const bellColor = isProfileSection ? "#f9f9fb" : "#e8e8ec";
+
   return (
     <div className="flex items-center justify-between p-8 relative shrink-0 w-full max-w-[1440px] mx-auto">
-      <BrandLogo />
+      <button onClick={() => navigate("/")} className="shrink-0 hover:opacity-80 transition-opacity">
+        <BrandLogo />
+      </button>
       <Navigation />
-      <UserProfile />
+      <UserActions avatarColor={avatarColor} bellColor={bellColor} />
     </div>
   );
 }

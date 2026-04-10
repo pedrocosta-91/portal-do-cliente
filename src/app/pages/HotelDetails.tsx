@@ -896,7 +896,7 @@ export default function HotelDetails() {
                 {/* Botão Reservar */}
                 <button
                   onClick={() => navigate(`/pagamento?destino=${destination}&checkIn=${checkIn}&checkOut=${checkOut}&adultos=${adults}&noites=${nights}${selectedRoom ? `&quarto=${selectedRoom}` : ""}`)}
-                  className="w-full h-[40px] bg-[#3e63dd] hover:opacity-90 text-white rounded-full text-[16px] font-medium leading-[24px] tracking-[0px] transition-opacity cursor-pointer"
+                  className="w-full h-[40px] bg-primary hover:opacity-90 text-white rounded-full text-[16px] font-medium leading-[24px] tracking-[0px] transition-opacity cursor-pointer"
                 >
                   Reservar
                 </button>

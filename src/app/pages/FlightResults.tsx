@@ -1,7 +1,7 @@
 import { useState, useRef, type ReactNode } from "react";
 import { useSearchParams, useNavigate } from "react-router";
 import { Footer } from "../components/Footer";
-import { BrandLogo } from "../components/Header";
+import { BrandLogo, UserActions } from "../components/Header";
 import {
   PlaneTakeoff,
   PlaneLanding,
@@ -1528,9 +1528,13 @@ export function FlightResultsHeader({
     if (!open) onAdultsChange?.(adultCount);
   }
 
+  const navigateHome = useNavigate();
+
   return (
     <div className="flex items-center justify-between p-[32px]">
-      <BrandLogo />
+      <button onClick={() => navigateHome("/")} className="shrink-0 hover:opacity-80 transition-opacity">
+        <BrandLogo />
+      </button>
 
       {/* Search Container */}
       <div className="bg-[#fcfcfd] flex gap-[16px] items-center px-[16px] py-[14px] rounded-full shadow-[0px_4px_16px_0px_rgba(0,0,0,0.1),0px_3px_12px_0px_rgba(0,0,0,0.1),0px_2px_3px_0px_rgba(0,0,51,0.06)] shrink-0">
@@ -1680,22 +1684,7 @@ export function FlightResultsHeader({
       </div>
 
       {/* User Actions */}
-      <div className="flex gap-[12px] items-center shrink-0">
-        <button className="bg-[#12a594] flex gap-[12px] h-[40px] items-center justify-center px-[16px] rounded-full hover:bg-[#0f8c7d] transition-colors cursor-pointer">
-          <span className="text-[16px] font-medium text-white leading-[24px]">Criar conta / Login</span>
-        </button>
-        <div className="flex flex-col items-start shrink-0">
-          <div className="bg-[#e8e8ec] flex items-center justify-center overflow-clip rounded-full size-[48px]">
-            <div className="relative size-[20px]">
-              <div className="absolute inset-[1%_13.33%_1.67%_13.33%]">
-                <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 14.6668 19.4661">
-                  <path clipRule="evenodd" d={svgPaths.p1cb983f0} fill="#008573" fillRule="evenodd" />
-                </svg>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <UserActions />
     </div>
   );
 }

@@ -27,11 +27,13 @@
   - 6.3 [Confirmação de Reserva — Aéreo](#63-confirmação-de-reserva--aéreo)
 7. [Área Logada do Usuário](#7-área-logada-do-usuário)
   - 7.1 [Layout & Navegação da Área Logada](#71-layout--navegação-da-área-logada)
-  - 7.2 [Minhas Viagens](#72-minhas-viagens)
-  - 7.3 [Dados Pessoais](#73-dados-pessoais)
-  - 7.4 [Forma de Pagamento](#74-forma-de-pagamento)
-  - 7.5 [Viajantes](#75-viajantes)
-  - 7.6 [Integração com o Fluxo de Checkout](#76-integração-com-o-fluxo-de-checkout)
+  - 7.2 [Painel de Perfil (esquerdo)](#72-painel-de-perfil-esquerdo)
+  - 7.3 [Tab "Meus Dados"](#73-tab-meus-dados)
+    - 7.3.1 [Formas de Pagamento](#731-formas-de-pagamento)
+    - 7.3.2 [Faturamento](#732-faturamento)
+    - 7.3.3 [Viajantes](#733-viajantes)
+  - 7.4 [Tab "Minhas Viagens"](#74-tab-minhas-viagens)
+  - 7.5 [Integração com o Fluxo de Checkout](#75-integração-com-o-fluxo-de-checkout)
 8. [Componentes Compartilhados](#8-componentes-compartilhados)
 9. [Regras de Negócio Globais](#9-regras-de-negócio-globais)
 10. [Dados & Contratos de API](#10-dados--contratos-de-api)
@@ -178,6 +180,9 @@ shadow-[0px_4px_16px_0px_rgba(0,0,0,0.1),0px_3px_12px_0px_rgba(0,0,0,0.1),0px_2p
 /resultados-aereo        → Listagem de voos
 /pagamento-aereo         → Checkout de aéreo
 /confirmacao-aereo       → Confirmação pós-checkout de aéreo
+/minha-conta             → Redirect para /minha-conta/perfil
+/minha-conta/perfil      → Perfil do usuário (tabs: Meus Dados | Minhas Viagens)
+/minha-conta/viagens/:id → Detalhe de uma viagem específica
 ```
 
 ### Parâmetros de URL por rota
@@ -848,7 +853,7 @@ Mesma estrutura de duas colunas da confirmação de hotel, com as seguintes dife
 
 ## 7. Área Logada do Usuário
 
-A área logada agrupa tudo que o usuário precisa gerenciar após autenticar na plataforma: reservas, perfil, meios de pagamento e viajantes cadastrados. É uma área transversal às jornadas de Hotel e Aéreo — independente do produto (instância white-label).
+A área logada agrupa tudo que o usuário precisa gerenciar após autenticar na plataforma: perfil, meios de pagamento, viajantes cadastrados e reservas. É uma área transversal às jornadas de Hotel e Aéreo — independente do produto (instância white-label).
 
 ---
 
@@ -857,73 +862,222 @@ A área logada agrupa tudo que o usuário precisa gerenciar após autenticar na 
 **Rotas da área logada:**
 
 ```
-/minha-conta                    → Redireciona para /minha-conta/viagens
-/minha-conta/viagens            → Minhas Viagens (listagem)
+/minha-conta                    → Redireciona para /minha-conta/perfil
+/minha-conta/perfil             → Perfil do usuário (tab padrão: Meus Dados)
 /minha-conta/viagens/:id        → Detalhe da viagem
-/minha-conta/dados-pessoais     → Dados Pessoais
-/minha-conta/pagamento          → Formas de Pagamento
-/minha-conta/viajantes          → Viajantes (listagem)
-/minha-conta/viajantes/novo     → Adicionar viajante
-/minha-conta/viajantes/:id      → Editar viajante
 ```
 
-**Layout geral da área logada:**
+> **Nota de design:** diferente do modelo original (sidebar + páginas separadas), o Figma define uma única tela de perfil com layout bicoluna e navegação por segmented control. As seções Dados de Pagamento, Faturamento e Viajantes fazem parte da tab "Meus Dados". "Minhas Viagens" é a tab secundária.
 
-Todas as páginas dentro de `/minha-conta` compartilham o mesmo layout base:
+**Layout da tela de perfil:**
 
 ```
-┌─────────────────────────────────────────────┐
-│  Header global (estado logado)              │
-├──────────────┬──────────────────────────────┤
-│              │                              │
-│  Sidebar     │   Conteúdo da seção          │
-│  de navegação│                              │
-│  (240px)     │                              │
-│              │                              │
-└──────────────┴──────────────────────────────┘
-│  Footer global                              │
-└─────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────┐
+│  Header global (estado logado)                      │
+├──────────────────────┬──────────────────────────────┤
+│                      │  [Meus Dados | Minhas Viagens]│
+│  Painel de Perfil    ├──────────────────────────────┤
+│  (400px, fixo)       │                              │
+│                      │   Conteúdo da tab ativa      │
+│  Avatar + Nome       │                              │
+│  Sexo / Nasc / CPF   │                              │
+│  Telefone / E-mail   │                              │
+│                      │                              │
+└──────────────────────┴──────────────────────────────┘
+│  Footer global                                      │
+└─────────────────────────────────────────────────────┘
 ```
 
-**Sidebar de navegação:**
+**Segmented Control:**
 
-- Largura: 240px, `shrink-0`, `sticky top-[80px]`
-- `rounded-2xl`, `border border-border`, `bg-white`, shadow padrão de card
-- Padding interno: `p-[16px]`
-
-**Cabeçalho da sidebar:**
-
-- Avatar circular do usuário (fundo `bg-primary`, ícone pessoa ou foto)
-- Nome completo — bold, size-3
-- E-mail — size-2, `text-muted-foreground`
-- Separador horizontal abaixo
-
-**Itens de navegação (lista vertical):**
-
-
-| Ícone        | Label               | Rota                          |
-| ------------ | ------------------- | ----------------------------- |
-| `Plane`      | Minhas Viagens      | `/minha-conta/viagens`        |
-| `UserRound`  | Dados Pessoais      | `/minha-conta/dados-pessoais` |
-| `CreditCard` | Formas de Pagamento | `/minha-conta/pagamento`      |
-| `Users`      | Viajantes           | `/minha-conta/viajantes`      |
-
-
-**Estado ativo:** item com fundo `bg-primary/10`, texto `text-primary`, ícone `text-primary`.  
-**Estado inativo:** texto `text-muted-foreground`, hover `bg-[rgba(0,0,51,0.04)]`.  
-
-Cada item: `flex items-center gap-[12px] px-[12px] py-[10px] rounded-lg cursor-pointer transition-colors`
+- Componente `Segmented Control` do Radix UI (disponível em `src/app/components/ui/`)
+- Duas tabs: **"Meus dados"** (padrão ativo) | **"Minhas Viagens"**
+- Largura: 560px, altura: 40px, `rounded-full`
+- Item ativo: fundo branco com borda `rounded-full`, texto `font-medium`
+- Item inativo: sem fundo, texto `font-normal`
 
 ---
 
-### 7.2 Minhas Viagens
+### 7.2 Painel de Perfil (esquerdo)
 
-**Rota:** `/minha-conta/viagens`  
-**Rota de detalhe:** `/minha-conta/viagens/:id`
+O painel esquerdo é fixo em todas as tabs. Exibe os dados de identidade do usuário em modo somente leitura — não é um formulário de edição.
+
+**Especificação do painel:**
+
+- Largura: 400px, `shrink-0`, `self-stretch`
+- `rounded-2xl`, shadow padrão de card, `bg-[#fcfcfd]`, `p-[16px]`
+- `gap-[24px]` entre seções internas
+
+**Cabeçalho do painel:**
+
+- Avatar circular 48px (fundo `bg-primary`, iniciais do nome em branco — size-4, `font-medium`)
+- Nome completo — size-6, `font-medium`, `text-foreground`
+- Separador horizontal (`border-border`)
+
+**Grade de dados pessoais:**
+
+Layout: `flex flex-wrap gap-[24px]`, cada item ocupa `w-[145px]`
+
+
+| Campo              | Exibição                                                                                                          |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| Sexo               | Label + valor (ex: "Masculino")                                                                                   |
+| Data de Nascimento | Label + valor (ex: "04/09/1991")                                                                                  |
+| CPF                | Label + valor mascarado (ex: "043.987.165-50")                                                                    |
+| Telefone           | Label + valor (ex: "(61) 99279-6391")                                                                             |
+| E-mail             | Label + valor (ex: "[pedro.costa@bancorbras.com.br](mailto:pedro.costa@bancorbras.com.br)") — ocupa largura total |
+
+
+- Label: size-2, `font-normal`, `text-muted-foreground`
+- Valor: size-2, `font-normal`, `text-foreground`
+
+> **Comportamento de edição:** o painel esquerdo é read-only nesta tela. Edição de dados pessoais pode ser endereçada em versão futura (ex: modal de edição acionado por botão no painel).
+
+---
+
+### 7.3 Tab "Meus Dados"
+
+Conteúdo exibido na tab padrão "Meus dados". Organizado em duas seções verticais: **Dados de Pagamento** e **Viajantes**.
+
+#### 7.3.1 Formas de Pagamento
+
+**Contexto white-label:**
+
+O papel do cartão varia por produto:
+
+- **Produtos com moeda própria** (ex: Trib Pass, Trib): o cartão cobre suplementações quando o saldo não é suficiente.
+- **Produtos em Reais** (ex: Voalá): o cartão é o método principal de pagamento.
+
+**Layout do card:**
+
+- Card `rounded-2xl`, shadow padrão, `bg-[#fcfcfd]`, `p-[16px]`
+- Cabeçalho: título "Formas de Pagamento" + icon button `+` (32px, `rounded-full`) à direita
+- Lista compacta: exibe no máximo **2 cartões** visíveis
+- Rodapé: link "Ver todos" — text-link em `text-primary`, size-1
+
+**Item de cartão (linha compacta):**
+
+Layout: `flex row`, `rounded-lg`, `bg-card`, shadow padrão, `p-[16px]`
+
+
+| Elemento          | Conteúdo                                                                                                                            |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Ícone da bandeira | Imagem da bandeira (Mastercard / Visa / Elo / Amex) — 32×32px                                                                       |
+| Tipo + número     | Tipo do cartão (ex: "Mastercard Débito") — size-2, `text-muted-foreground`; número mascarado "****XXXX" — size-2, `text-foreground` |
+| Menu de ações     | Icon button `⋮` (dots-vertical, 24px) — abre dropdown com ações: "Definir como principal" e "Excluir"                               |
+
+
+> **Diferença de design vs. versão anterior do PRD:** a visão compacta não exibe validade nem badge "Principal". Esses detalhes ficam disponíveis na tela expandida (via "Ver todos"). O tipo de cartão inclui "Débito" ou "Crédito" junto ao nome da bandeira.
+
+**Modal — Adicionar cartão:**
+
+Disparado pelo icon button `+` no cabeçalho do card.
+
+
+| Campo                  | Tipo              | Comportamento                                                                        |
+| ---------------------- | ----------------- | ------------------------------------------------------------------------------------ |
+| Número do cartão       | Input text        | Máscara `0000 0000 0000 0000`. Ícone da bandeira atualiza automaticamente ao digitar |
+| Nome no cartão         | Input text        | Conforme impresso no cartão                                                          |
+| Validade               | Input text        | Máscara `MM/AA`                                                                      |
+| CVV                    | Input text        | `type="password"`, 3 ou 4 dígitos conforme bandeira                                  |
+| Definir como principal | Checkbox / Toggle | Se marcado, este passa a ser o cartão padrão                                         |
+
+
+Botões: "Cancelar" (outline) + "Salvar cartão" (`bg-primary text-white rounded-full`)
+
+**Excluir cartão (via menu ⋮):**
+
+- `AlertDialog`: "Tem certeza que deseja remover este cartão? Esta ação não pode ser desfeita."
+- Botões: "Cancelar" (outline) + "Remover" (destructive)
+- Se o cartão a ser excluído for o principal e houver outros, exibir aviso: "Defina outro cartão como principal antes de remover este."
+
+---
+
+#### 7.3.2 Faturamento
+
+Card posicionado ao lado de "Formas de Pagamento" (lado direito, mesma linha, mesma altura).
+
+**Objetivo:** registrar o responsável de faturamento — a pessoa em cujo nome as faturas e recibos são emitidos (pode ser diferente do usuário logado em contextos corporativos).
+
+**Layout do card:**
+
+- Card `rounded-2xl`, shadow padrão, `bg-[#fcfcfd]`, `p-[16px]`
+- Cabeçalho: título "Faturamento" + icon button `+` (32px, `rounded-full`) à direita
+
+**Item de responsável de faturamento:**
+
+Layout: `flex row`, `rounded-lg`, `bg-card`, shadow padrão, `p-[16px]`
+
+
+| Elemento      | Conteúdo                                                      |
+| ------------- | ------------------------------------------------------------- |
+| Avatar        | Círculo 40px (fundo `bg-primary`, iniciais do nome em branco) |
+| Nome          | Nome completo — size-2, `text-muted-foreground`               |
+| CPF           | "CPF: 000.000.000-00" — size-2, `text-foreground`             |
+| Menu de ações | Icon button `⋮` (dots-vertical, 24px)                         |
+
+
+> **Regra de negócio:** pode haver apenas um responsável de faturamento ativo por vez. O botão `+` só fica habilitado quando não há nenhum cadastrado. Se já houver um, o `+` está desabilitado ou oculto.
+
+---
+
+#### 7.3.3 Viajantes
+
+Seção abaixo dos cards de Dados de Pagamento.
+
+**Objetivo:** permitir que o usuário pré-cadastre dados de pessoas que costumam viajar com ele, para reuso no checkout.
+
+**Layout da seção:**
+
+- Título "Viajantes" — size-4, `font-medium`
+- Card container `rounded-2xl`, shadow padrão, `bg-[#fcfcfd]`, `p-[16px]`
+- Subtítulo interno: "Quem viaja com você com frequência" — size-3, `font-medium`
+- Lista horizontal de cards compactos (`flex row`, `gap-[16px]`)
+
+**Card de adicionar viajante (sempre o primeiro da lista):**
+
+- Largura: 200px, altura: 148px
+- Borda dashed: `border border-dashed border-border`, `rounded-lg`, `p-[16px]`
+- Icon button `+` (40px, `rounded-md`) no topo
+- Label "Cadastrar" — size-2, `text-muted-foreground`
+- Label "novo viajante" — size-2, `text-foreground`
+
+**Card de viajante cadastrado:**
+
+- Largura: 200px, `rounded-lg`, `bg-card`, shadow padrão, `p-[16px]`
+- Avatar 40px (fundo `bg-primary`, iniciais em branco)
+- Nome — size-2, `text-muted-foreground`
+- CPF mascarado — size-2, `text-foreground`
+- Badge de parentesco: posicionado **fora do card, no topo direito** (`absolute`, `top-[-10px] right-[16px]`), fundo `bg-primary`, texto branco, `rounded-[4px]`
+
+**Parentescos suportados:** Cônjuge / Filho(a) / Pai / Mãe / Amigo(a) / Outro
+
+**Formulário de adicionar / editar viajante:**
+
+Exibido em modal ou página dedicada (a definir). Campos:
+
+
+| Campo              | Tipo                    | Validação                                                 |
+| ------------------ | ----------------------- | --------------------------------------------------------- |
+| Nome               | Input text              | Obrigatório                                               |
+| Sobrenome          | Input text              | Obrigatório                                               |
+| CPF                | Input text              | Obrigatório, máscara `000.000.000-00`                     |
+| Data de Nascimento | Input date / DatePicker | Obrigatório, formato dd/mm/aaaa                           |
+| Sexo               | Select                  | Masculino / Feminino / Não-binário / Prefiro não informar |
+| Telefone           | Input text              | Máscara `(00) 00000-0000`                                 |
+| E-mail             | Input email             | Opcional                                                  |
+| Parentesco         | Select                  | Cônjuge / Filho(a) / Pai / Mãe / Amigo(a) / Outro         |
+
+
+---
+
+### 7.4 Tab "Minhas Viagens"
+
+Conteúdo exibido ao clicar na tab "Minhas Viagens" do segmented control.
 
 #### Listagem de viagens
 
-**Tabs de categorização:**
+**Tabs de categorização (dentro da tab "Minhas Viagens"):**
 
 - "Ativas" — reservas com check-in futuro ou em andamento
 - "Passadas" — reservas com check-out já realizado
@@ -945,7 +1099,7 @@ Layout: `flex row`, `rounded-2xl`, `border border-border`, `bg-white`, shadow pa
 
 - Título: destino principal da viagem (ex: "Miami, Estados Unidos") — bold, size-4
 - Período: "DD Mês AAAA → DD Mês AAAA" — size-2, `text-muted-foreground`
-- Serviços incluídos: ícones inline — `Hotel` · `Plane` · `Car` — exibidos apenas para os serviços presentes na reserva
+- Serviços incluídos: ícones inline — `Hotel` · `Plane` · `Car` — exibidos apenas para os serviços presentes
 - Total pago: valor na moeda configurada — size-3, `text-foreground`
 
 **Estado vazio (nenhuma viagem na categoria):**
@@ -1039,198 +1193,7 @@ Card separado com totais consolidados:
 
 ---
 
-### 7.3 Dados Pessoais
-
-**Rota:** `/minha-conta/dados-pessoais`
-
-#### Layout
-
-- Cabeçalho da seção: título "Dados Pessoais" + subtítulo "Mantenha suas informações sempre atualizadas."
-- Formulário em card único (`rounded-2xl`, `border border-border`, `bg-white`, shadow)
-
-#### Campos do formulário
-
-
-| Campo              | Tipo                    | Validação                                                                                                                  |
-| ------------------ | ----------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| CPF                | Input text              | Somente leitura após primeiro cadastro — exibir mascarado (`000.000.000-00`). Para alterar, fluxo separado de verificação. |
-| Nome               | Input text              | Obrigatório                                                                                                                |
-| Sobrenome          | Input text              | Obrigatório                                                                                                                |
-| Data de Nascimento | Input date / DatePicker | Obrigatório, formato dd/mm/aaaa                                                                                            |
-| Sexo               | Select                  | Opções: Masculino / Feminino / Não-binário / Prefiro não informar                                                          |
-| Telefone           | Input text              | Máscara `(00) 00000-0000`, obrigatório                                                                                     |
-| E-mail             | Input email             | Obrigatório. Para alterar e-mail, fluxo separado de verificação (envio de código).                                         |
-
-
-#### Comportamento
-
-- Todos os campos são exibidos preenchidos com os dados atuais do usuário
-- **Modo visualização (padrão):** campos desabilitados, exibindo os dados atuais. Botão "Editar" no topo do card
-- **Modo edição:** ao clicar em "Editar", todos os campos editáveis ficam habilitados. Aparece botão "Salvar" (primário) e "Cancelar" (outline)
-- **CPF:** sempre somente leitura. Exibir texto auxiliar: "Para alterar o CPF, entre em contato com o suporte."
-- **E-mail:** ao tentar alterar, exibir modal de confirmação com envio de código para o e-mail atual
-- **Salvar:** exibe toast de sucesso ("Dados atualizados com sucesso") ou erro
-
-#### Layout do formulário
-
-Dois campos por linha onde fizer sentido:
-
-```
-[Nome                ] [Sobrenome              ]
-[CPF — somente leit.] [Data de Nascimento      ]
-[Sexo               ] [Telefone                ]
-[E-mail                                        ]
-```
-
-Botões de ação alinhados à direita do card: "Cancelar" (outline) + "Salvar" (`bg-primary text-white rounded-full`)
-
----
-
-### 7.4 Forma de Pagamento
-
-**Rota:** `/minha-conta/pagamento`
-
-#### Contexto white-label
-
-O papel do cartão de crédito varia por produto:
-
-- **Produtos com moeda própria ou pontos** (ex: Trib Pass, Trib): o cartão é usado para pagar suplementações de valor e taxas quando o saldo na moeda configurada não cobre o total.
-- **Produtos em Reais** (ex: Voalá): o cartão é o método de pagamento principal para todas as transações.
-
-A tela de Formas de Pagamento é igual em ambos os casos — a diferença está no contexto de uso exibido pelo produto.
-
-#### Layout
-
-- Cabeçalho: título "Formas de Pagamento" + subtítulo contextual conforme o produto
-- Botão "Adicionar cartão" — `bg-primary text-white rounded-full` — fixo no topo direito do cabeçalho
-- Lista de cartões cadastrados
-
-#### Card de cartão cadastrado
-
-Layout: `flex row`, `rounded-2xl`, `border border-border`, `bg-white`
-
-
-| Elemento          | Conteúdo                                                                                              |
-| ----------------- | ----------------------------------------------------------------------------------------------------- |
-| Ícone da bandeira | Mastercard / Visa / Elo / Amex — identificado automaticamente pelo número                             |
-| Identificação     | "Crédito" + "•••• •••• •••• XXXX" (últimos 4 dígitos)                                                 |
-| Validade          | "Válido até MM/AA" — size-2, `text-muted-foreground`                                                  |
-| Cartão principal  | Badge "Principal" (success) — exibido apenas no cartão padrão                                         |
-| Ações             | Botão "Definir como principal" (outline, condicional) + botão "Excluir" (destructive, ícone `Trash2`) |
-
-
-**Cartão principal:** o primeiro da lista (ou o definido pelo usuário) é marcado como principal e usado por padrão no checkout.
-
-#### Modal — Adicionar / Editar cartão
-
-Disparado pelo botão "Adicionar cartão" ou pelo ícone de edição em um cartão existente.
-
-
-| Campo                  | Tipo              | Comportamento                                                                        |
-| ---------------------- | ----------------- | ------------------------------------------------------------------------------------ |
-| Número do cartão       | Input text        | Máscara `0000 0000 0000 0000`. Ícone da bandeira atualiza automaticamente ao digitar |
-| Nome no cartão         | Input text        | Conforme impresso no cartão                                                          |
-| Validade               | Input text        | Máscara `MM/AA`                                                                      |
-| CVV                    | Input text        | `type="password"`, 3 ou 4 dígitos conforme bandeira                                  |
-| Definir como principal | Checkbox / Toggle | Se marcado, este passa a ser o cartão padrão                                         |
-
-
-Botões: "Cancelar" (outline) + "Salvar cartão" (`bg-primary text-white rounded-full`)
-
-#### Excluir cartão
-
-- Ao clicar em "Excluir", exibir `AlertDialog` de confirmação: "Tem certeza que deseja remover este cartão? Esta ação não pode ser desfeita."
-- Botões: "Cancelar" (outline) + "Remover" (destructive)
-- Se o cartão a ser excluído for o principal e houver outros cartões cadastrados, exibir aviso: "Defina outro cartão como principal antes de remover este."
-
----
-
-### 7.5 Viajantes
-
-**Rota:** `/minha-conta/viajantes`  
-**Rota de adição:** `/minha-conta/viajantes/novo`  
-**Rota de edição:** `/minha-conta/viajantes/:id`
-
-#### Objetivo
-
-Permitir que o usuário cadastre antecipadamente os dados de pessoas que costumam viajar com ele. Durante o checkout, em vez de preencher os dados do viajante manualmente a cada reserva, o usuário seleciona um viajante já cadastrado e os campos são preenchidos automaticamente.
-
-#### Listagem de viajantes
-
-**Rota:** `/minha-conta/viajantes`
-
-- Cabeçalho: título "Viajantes" + botão "Adicionar viajante" (`bg-primary text-white rounded-full`) no topo direito
-- Lista de cards de viajante cadastrados
-
-**Card de viajante:**
-
-Layout: `flex row`, `rounded-2xl`, `border border-border`, `bg-white`
-
-
-| Elemento    | Conteúdo                                                                                 |
-| ----------- | ---------------------------------------------------------------------------------------- |
-| Avatar      | Círculo com iniciais do nome (fundo `bg-primary/20`, texto `text-primary`)               |
-| Nome        | Nome completo — bold, size-3                                                             |
-| Parentesco  | Badge com o parentesco — size-1, estilo info-alpha                                       |
-| Informações | CPF mascarado + data de nascimento                                                       |
-| Ações       | Botão "Editar" (ícone `Pencil`, outline) + Botão "Excluir" (ícone `Trash2`, destructive) |
-
-
-**Estado vazio:**
-
-- Ícone `Users` em destaque
-- Texto "Você ainda não tem viajantes cadastrados."
-- CTA "Adicionar viajante" → navega para `/minha-conta/viajantes/novo`
-
-#### Formulário de viajante (Adicionar / Editar)
-
-Mesmo campos dos Dados Pessoais, acrescido do campo de parentesco. Exibido em página dedicada (não modal, para dar espaço ao formulário completo).
-
-**Campos:**
-
-
-| Campo              | Tipo                    | Validação                                                 |
-| ------------------ | ----------------------- | --------------------------------------------------------- |
-| Nome               | Input text              | Obrigatório                                               |
-| Sobrenome          | Input text              | Obrigatório                                               |
-| CPF                | Input text              | Obrigatório, máscara `000.000.000-00`                     |
-| Data de Nascimento | Input date / DatePicker | Obrigatório, formato dd/mm/aaaa                           |
-| Sexo               | Select                  | Masculino / Feminino / Não-binário / Prefiro não informar |
-| Telefone           | Input text              | Máscara `(00) 00000-0000`                                 |
-| E-mail             | Input email             | Opcional                                                  |
-| Parentesco         | Select                  | Cônjuge / Filho(a) / Pai / Mãe / Amigo(a) / Outro         |
-
-
-**Layout do formulário:**
-
-Dois campos por linha:
-
-```
-[Nome                ] [Sobrenome             ]
-[CPF                 ] [Data de Nascimento    ]
-[Sexo                ] [Telefone              ]
-[E-mail              ] [Parentesco            ]
-```
-
-**Cabeçalho da página:**
-
-- Breadcrumb: "< Viajantes" (link) / "Novo viajante" ou "Editar viajante"
-- Título "Adicionar viajante" ou "Editar [Nome do viajante]"
-
-**Botões de ação (rodapé do card de formulário):**
-
-- "Cancelar" (outline) → volta para `/minha-conta/viajantes`
-- "Salvar viajante" (`bg-primary text-white rounded-full`) → salva e redireciona para `/minha-conta/viajantes` com toast de sucesso
-
-#### Excluir viajante
-
-- Disparado a partir do card na listagem
-- `AlertDialog` de confirmação: "Tem certeza que deseja remover [Nome] da sua lista de viajantes?"
-- Botões: "Cancelar" (outline) + "Remover" (destructive)
-
----
-
-### 7.6 Integração com o Fluxo de Checkout
+### 7.5 Integração com o Fluxo de Checkout
 
 A área de viajantes se conecta diretamente ao fluxo de checkout de hotel e aéreo. A **Seção 1 — Dados Pessoais** do Accordion de pagamento deve ser atualizada para suportar seleção de viajantes cadastrados.
 
@@ -1534,12 +1497,46 @@ interface CurrencyConfig {
 
 ### Layout & Navegação
 
-- Sidebar de navegação exibida em todas as rotas `/minha-conta/`*
-- Item ativo destacado corretamente conforme a rota atual
+- Redirect de `/minha-conta` → `/minha-conta/perfil`
 - Header em estado logado (com avatar, nome e saldo)
-- Redirect de `/minha-conta` → `/minha-conta/viagens`
+- Segmented control exibido com tabs "Meus dados" (ativa por padrão) e "Minhas Viagens"
+- Alternar entre tabs troca o conteúdo da área direita sem recarregar a página
 
-### Minhas Viagens — Listagem
+### Painel de Perfil (esquerdo)
+
+- Painel fixo exibe: avatar com iniciais, nome completo, separador, grade de dados pessoais
+- Dados exibidos: Sexo, Data de Nascimento, CPF mascarado, Telefone, E-mail
+- Painel permanece visível ao alternar entre tabs
+
+### Tab "Meus Dados" — Formas de Pagamento
+
+- Card exibe no máximo 2 cartões cadastrados
+- Cada cartão exibe: ícone de bandeira, tipo (ex: "Mastercard Débito"), número mascarado "****XXXX"
+- Menu ⋮ abre dropdown com opções: "Definir como principal" e "Excluir"
+- Icon button `+` abre modal de adicionar cartão
+- Link "Ver todos" é exibido quando há mais de 2 cartões
+- Modal de adicionar cartão contém: número, nome, validade, CVV, toggle "Definir como principal"
+- Ícone da bandeira no campo de número atualiza automaticamente ao digitar
+- Exclusão de cartão dispara AlertDialog de confirmação
+- Bloqueio de exclusão do cartão principal quando há outros cadastrados (com aviso)
+
+### Tab "Meus Dados" — Faturamento
+
+- Card exibe o responsável de faturamento (se cadastrado): avatar com iniciais, nome, CPF
+- Icon button `+` está desabilitado ou oculto quando já há um responsável cadastrado
+- Menu ⋮ permite editar ou remover o responsável de faturamento
+
+### Tab "Meus Dados" — Viajantes
+
+- Seção exibe título "Viajantes" e container com lista horizontal de cards
+- Subtítulo interno: "Quem viaja com você com frequência"
+- Primeiro card sempre é o "Cadastrar novo viajante" (borda dashed)
+- Cards de viajantes exibem: avatar com iniciais, nome, CPF mascarado, badge de parentesco (posicionado no topo direito do card)
+- Clicar em "Cadastrar novo viajante" abre formulário (modal ou página dedicada)
+- Formulário de viajante contém todos os campos obrigatórios: Nome, Sobrenome, CPF, Data de Nascimento, Sexo, Telefone, E-mail (opcional), Parentesco
+- Campo Parentesco: Cônjuge / Filho(a) / Pai / Mãe / Amigo(a) / Outro
+
+### Tab "Minhas Viagens" — Listagem
 
 - Tabs "Ativas" e "Passadas" alternam a lista corretamente
 - Card de viagem exibe: destino, período, ícones de serviços incluídos, total pago e status badge
@@ -1547,7 +1544,7 @@ interface CurrencyConfig {
 - Estado vazio exibido quando não há viagens na categoria selecionada
 - CTA "Ver detalhes" navega para `/minha-conta/viagens/:id`
 
-### Minhas Viagens — Detalhe
+### Tab "Minhas Viagens" — Detalhe
 
 - Breadcrumb funcional ("< Minhas Viagens")
 - Cabeçalho exibe destino, período e status geral
@@ -1556,45 +1553,6 @@ interface CurrencyConfig {
 - Card de Aéreo exibe: voo(s), companhia, rota, horários, data, bagagem inclusa e total
 - Resumo financeiro consolidado com total geral e método de pagamento
 
-### Dados Pessoais
-
-- Campos exibidos preenchidos com os dados atuais do usuário
-- Modo visualização: campos desabilitados por padrão
-- Botão "Editar" habilita os campos editáveis
-- CPF é sempre somente leitura com texto auxiliar explicativo
-- Botões "Salvar" e "Cancelar" aparecem apenas no modo edição
-- "Cancelar" restaura os valores originais e volta ao modo visualização
-- "Salvar" exibe toast de sucesso ou mensagem de erro
-- Alteração de e-mail dispara modal de confirmação com envio de código
-
-### Formas de Pagamento
-
-- Lista de cartões cadastrados exibida com bandeira, últimos 4 dígitos e validade
-- Cartão principal destacado com badge "Principal"
-- Botão "Adicionar cartão" abre modal com formulário
-- Ícone da bandeira no campo de número atualiza automaticamente ao digitar
-- "Definir como principal" funciona corretamente
-- Exclusão de cartão dispara AlertDialog de confirmação
-- Bloqueio de exclusão do cartão principal quando há outros cadastrados (com aviso)
-- Estado vazio exibido quando não há cartões cadastrados
-
-### Viajantes — Listagem
-
-- Cards de viajantes exibem: avatar com iniciais, nome, badge de parentesco, CPF mascarado
-- Botões "Editar" e "Excluir" funcionam em cada card
-- Estado vazio com CTA para adicionar o primeiro viajante
-- Botão "Adicionar viajante" navega para `/minha-conta/viajantes/novo`
-
-### Viajantes — Formulário
-
-- Todos os campos presentes: Nome, Sobrenome, CPF, Data de Nascimento, Sexo, Telefone, E-mail, Parentesco
-- Campo Parentesco: Cônjuge / Filho(a) / Pai / Mãe / Amigo(a) / Outro
-- Validações obrigatórias funcionam (Nome, Sobrenome, CPF, Data de Nascimento, Parentesco)
-- "Salvar viajante" redireciona para `/minha-conta/viajantes` com toast de sucesso
-- "Cancelar" volta para `/minha-conta/viajantes` sem salvar
-- Na edição, campos aparecem pré-preenchidos com os dados do viajante
-- Exclusão de viajante dispara AlertDialog de confirmação
-
 ### Integração com Checkout
 
 - Seletor de viajantes cadastrados aparece na Seção 1 do checkout quando o usuário está logado e tem viajantes salvos
@@ -1602,5 +1560,5 @@ interface CurrencyConfig {
 - Campos preenchidos automaticamente permanecem editáveis para ajustes pontuais
 - Opção "Preencher manualmente" exibe os campos vazios
 - Checkbox "Salvar este viajante para futuras reservas" aparece no modo manual
-- Viajante salvo via checkout aparece na listagem de `/minha-conta/viajantes`
+- Viajante salvo via checkout aparece nos cards da seção Viajantes em `/minha-conta/perfil`
 
