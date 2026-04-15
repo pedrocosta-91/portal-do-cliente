@@ -4,7 +4,7 @@
 
 **Versão:** 1.0  
 **Data:** Abril 2026  
-**Autor:** Pedro Costa (PM / Product Designer)  
+**Autor:** Pedro Costa (Product Designer)  
 **Status:** Pronto para desenvolvimento
 
 ---
