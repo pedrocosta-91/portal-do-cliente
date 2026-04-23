@@ -2,6 +2,7 @@ import { useState } from "react";
 import svgPaths from "../../imports/svg-785rsacjux";
 import { useNavigate } from "react-router";
 import { HotelRoomsDrawer, type Room } from "./HotelRoomsDrawer";
+import { useCart } from "../../lib/cartContext";
 
 // Imagens de quartos de exemplo (diferentes para cada tipo de quarto)
 const roomImages = [
@@ -46,7 +47,37 @@ export function HotelResultCard({
   searchParams,
 }: HotelResultCardProps) {
   const navigate = useNavigate();
+  const { addItem } = useCart();
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  function handleReserve(room: Room) {
+    addItem({
+      id: `hotel-${Date.now()}`,
+      type: "hotel",
+      hotelName: title,
+      hotelRating: parseFloat(rating),
+      hotelCity: searchParams?.destino || location,
+      roomName: room.name,
+      hasFreeCancel: true,
+      hasBreakfast: false,
+      destino: searchParams?.destino || "",
+      checkIn: searchParams?.checkIn || "",
+      checkOut: searchParams?.checkOut || "",
+      adultos: searchParams?.adultos || "2",
+      noites: (() => {
+        if (!searchParams?.checkIn || !searchParams?.checkOut) return "1";
+        const diff = Math.ceil(
+          (new Date(searchParams.checkOut).getTime() - new Date(searchParams.checkIn).getTime()) / 86400000
+        );
+        return String(diff);
+      })(),
+      quarto: room.name,
+      price: room.totalPrice || room.price,
+      currency: "Tribz",
+      offerExpiresAt: Date.now() + 20 * 60 * 1000,
+    });
+    navigate("/carrinho?services=hotel");
+  }
 
   // Quartos de exemplo baseados nos dados do hotel
   const rooms: Room[] = [
@@ -311,6 +342,7 @@ export function HotelResultCard({
     <HotelRoomsDrawer
       isOpen={drawerOpen}
       onClose={() => setDrawerOpen(false)}
+      onReserve={handleReserve}
       hotel={{
         name: title,
         image: image,

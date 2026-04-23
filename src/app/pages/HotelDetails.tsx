@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router";
+import { useCart } from "../../lib/cartContext";
 import { SearchResultsHeader } from "../components/SearchResultsHeader";
 import { Footer } from "../components/Footer";
 import { HotelCard } from "../components/HotelCard";
@@ -63,6 +64,8 @@ export default function HotelDetails() {
   };
 
   const nights = calculateNights();
+
+  const { addItem } = useCart();
 
   const [selectedRoomTab, setSelectedRoomTab] = useState("Todos");
   const [galleryOpen, setGalleryOpen] = useState(false);
@@ -895,7 +898,28 @@ export default function HotelDetails() {
 
                 {/* Botão Reservar */}
                 <button
-                  onClick={() => navigate(`/pagamento?destino=${destination}&checkIn=${checkIn}&checkOut=${checkOut}&adultos=${adults}&noites=${nights}${selectedRoom ? `&quarto=${selectedRoom}` : ""}`)}
+                  onClick={() => {
+                    addItem({
+                      id: `hotel-${Date.now()}`,
+                      type: "hotel",
+                      hotelName: hotel.name,
+                      hotelRating: parseFloat(hotel.rating),
+                      hotelCity: destination,
+                      roomName: selectedRoom || "Quarto Standard",
+                      hasFreeCancel: true,
+                      hasBreakfast: false,
+                      destino: destination,
+                      checkIn,
+                      checkOut,
+                      adultos: adults,
+                      noites: String(nights),
+                      quarto: selectedRoom || "",
+                      price: hotel.price,
+                      currency: "Tribz",
+                      offerExpiresAt: Date.now() + 20 * 60 * 1000,
+                    });
+                    navigate("/carrinho?services=hotel");
+                  }}
                   className="w-full h-[40px] bg-primary hover:opacity-90 text-white rounded-full text-[16px] font-medium leading-[24px] tracking-[0px] transition-opacity cursor-pointer"
                 >
                   Reservar

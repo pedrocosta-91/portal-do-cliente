@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from "react-router";
-import { Bell } from "lucide-react";
+import { Bell, ShoppingCart } from "lucide-react";
 import svgPaths from "../../imports/svg-4cv1bqd2th";
+import { useCart } from "../../lib/cartContext";
 
 // ---------------------------------------------------------------------------
 // Brand logo (unchanged)
@@ -197,6 +198,7 @@ export function UserActions({
   bellColor?: string;
 }) {
   const navigate = useNavigate();
+  const { items } = useCart();
 
   return (
     <div className="flex gap-3 items-center h-12">
@@ -247,6 +249,19 @@ export function UserActions({
         style={{ backgroundColor: bellColor }}
       >
         <Bell size={20} className="text-foreground" strokeWidth={1.5} />
+      </button>
+
+      {/* Cart button */}
+      <button
+        onClick={() => navigate("/carrinho")}
+        className="relative flex items-center justify-center rounded-full shrink-0 size-12 bg-card shadow-[0px_4px_16px_0px_rgba(0,0,0,0.1),0px_3px_12px_0px_rgba(0,0,0,0.1),0px_2px_3px_0px_rgba(0,0,51,0.06)] hover:bg-muted transition-colors"
+      >
+        <ShoppingCart size={20} strokeWidth={1.5} className="text-foreground" />
+        {items.length > 0 && (
+          <span className="absolute -top-1 -right-1 bg-primary text-white rounded-full size-4 flex items-center justify-center text-[10px] font-medium leading-none">
+            {items.length}
+          </span>
+        )}
       </button>
     </div>
   );

@@ -9,42 +9,51 @@
 ## Fluxo completo
 
 ```
-Home (busca) → /resultados-aereo → Modal Detalhes do Voo → Modal Escolha de Tarifa → /pagamento-aereo → /confirmacao-aereo
+Home (busca) → /resultados-aereo → Modal Detalhes do Voo → Modal Escolha de Tarifa → /carrinho → /pagamento-aereo → /confirmacao-aereo
 ```
+
+> **Atualização (2026-04-23):** O botão "Avançar" no Modal de Escolha de Tarifa agora **adiciona o voo ao carrinho** e navega para `/carrinho?services=flight`, não mais para `/pagamento-aereo` diretamente. O carrinho é o novo passo obrigatório antes do pagamento.
 
 ### Passo a passo
 
-| # | Tela / Ação | Rota | Arquivo |
-|---|---|---|---|
-| 1 | Busca na Home — Tab Aéreo | `/` | `HomePage.tsx` |
-| 2 | Listagem de voos (IDA + VOLTA) | `/resultados-aereo` | `FlightResults.tsx` |
-| 3 | Modal detalhes do voo | overlay | `FlightDetailsModal.tsx` |
-| 4 | Modal escolha de tarifa | overlay | `FlightClassModal.tsx` |
-| 5 | Pagamento | `/pagamento-aereo` | `FlightPayment.tsx` |
-| 6 | Confirmação | `/confirmacao-aereo` | `FlightBookingConfirmation.tsx` |
+
+| #   | Tela / Ação                    | Rota                        | Arquivo                         |
+| --- | ------------------------------ | --------------------------- | ------------------------------- |
+| 1   | Busca na Home — Tab Aéreo      | `/`                         | `HomePage.tsx`                  |
+| 2   | Listagem de voos (IDA + VOLTA) | `/resultados-aereo`         | `FlightResults.tsx`             |
+| 3   | Modal detalhes do voo          | overlay                     | `FlightDetailsModal.tsx`        |
+| 4   | Modal escolha de tarifa        | overlay                     | `FlightClassModal.tsx`          |
+| 5   | **Carrinho** *(novo)*          | `/carrinho?services=flight` | `CartPage.tsx`                  |
+| 6   | Pagamento                      | `/pagamento-aereo`          | `FlightPayment.tsx`             |
+| 7   | Confirmação                    | `/confirmacao-aereo`        | `FlightBookingConfirmation.tsx` |
+
 
 ---
 
 ## Personas atendidas
 
-| Persona | Motivação principal |
-|---|---|
-| Colaborador Trib Pass | Comprar passagem com saldo corporativo (Tribz) |
-| Viajante Trib | Maximizar cashback ou benefícios da tarifa |
-| Cliente Voalá | Compra simples de passagem no portal da operadora |
+
+| Persona               | Motivação principal                               |
+| --------------------- | ------------------------------------------------- |
+| Colaborador Trib Pass | Comprar passagem com saldo corporativo (Tribz)    |
+| Viajante Trib         | Maximizar cashback ou benefícios da tarifa        |
+| Cliente Voalá         | Compra simples de passagem no portal da operadora |
+
 
 ---
 
 ## Parâmetros de busca — Tab Aéreo (Home)
 
-| Campo | Tipo | Validação |
-|---|---|---|
-| Origem | Input com autocomplete (IATA + cidade) | Obrigatório |
-| Destino | Input com autocomplete (IATA + cidade) | Obrigatório |
-| Data de ida | DatePicker | Obrigatório |
-| Data de volta | DatePicker | Mínimo = Data de ida + 1 dia; oculto se "Somente ida" |
-| Passageiros | Select (adultos + crianças) | Obrigatório |
-| Tipo de viagem | Toggle/Radio: Ida e volta / Somente ida | Default: Ida e volta |
+
+| Campo          | Tipo                                    | Validação                                             |
+| -------------- | --------------------------------------- | ----------------------------------------------------- |
+| Origem         | Input com autocomplete (IATA + cidade)  | Obrigatório                                           |
+| Destino        | Input com autocomplete (IATA + cidade)  | Obrigatório                                           |
+| Data de ida    | DatePicker                              | Obrigatório                                           |
+| Data de volta  | DatePicker                              | Mínimo = Data de ida + 1 dia; oculto se "Somente ida" |
+| Passageiros    | Select (adultos + crianças)             | Obrigatório                                           |
+| Tipo de viagem | Toggle/Radio: Ida e volta / Somente ida | Default: Ida e volta                                  |
+
 
 **CTA:** "Buscar" → `/resultados-aereo?origem=X&destino=Y&dataIda=YYYY-MM-DD&dataVolta=YYYY-MM-DD&passageiros=N&tipo=ida_volta`
 
@@ -52,15 +61,17 @@ Home (busca) → /resultados-aereo → Modal Detalhes do Voo → Modal Escolha d
 
 ## Figma — Nodes de referência
 
-| Tela | Node ID | URL |
-|---|---|---|
-| Listagem de voos | `196:26505` | `EJ1yZNlnpYPREt76Fypnyz` |
-| Modal Detalhes do Voo (collapsed) | `500:18902` | — |
-| Modal Detalhes do Voo (expandido) | `503:11719` | — |
-| Modal Escolha de Tarifa | `513:4913` | — |
-| Pagamento Dados Pessoais | `319:7238` | — |
-| Pagamento Como quer pagar | `319:7554` | — |
-| Pagamento Nota Fiscal | `319:8581` | — |
+
+| Tela                              | Node ID     | URL                      |
+| --------------------------------- | ----------- | ------------------------ |
+| Listagem de voos                  | `196:26505` | `EJ1yZNlnpYPREt76Fypnyz` |
+| Modal Detalhes do Voo (collapsed) | `500:18902` | —                        |
+| Modal Detalhes do Voo (expandido) | `503:11719` | —                        |
+| Modal Escolha de Tarifa           | `513:4913`  | —                        |
+| Pagamento Dados Pessoais          | `319:7238`  | —                        |
+| Pagamento Como quer pagar         | `319:7554`  | —                        |
+| Pagamento Nota Fiscal             | `319:8581`  | —                        |
+
 
 ---
 
@@ -76,12 +87,15 @@ Home (busca) → /resultados-aereo → Modal Detalhes do Voo → Modal Escolha d
 
 ## Divergências PRD × Figma
 
-| Aspecto | PRD diz | Figma mostra | Implementar |
-|---|---|---|---|
-| Layout da listagem | Tabs "Ida" / "Volta" separados | IDA + VOLTA simultâneos na mesma página | **Figma** |
-| CTA do card de voo | "Adicionar voo" | "Selecionar" | **Figma** |
-| Expansão de tarifas | Inline dentro do card | Modal separado "Escolha como quer voar" | **Figma** |
-| Nomes das tarifas | Econômica Light/Standard/Plus | Light / Classic / Flex | **Figma** |
-| Seção 2 do pagamento | Slider de Tribz (igual hotel) | Seleção de método de pagamento (Pix / Boleto / Cartão / Pontos) | **Figma** |
-| Filtro Paradas | Radio (Direto / 1 / 2+) | Checkbox (Direta / 1 ou mais paradas) | **Figma** |
-| Filtro Bagagem | Toggle | Checkbox | **Figma** |
+
+| Aspecto              | PRD diz                        | Figma mostra                                                    | Implementar |
+| -------------------- | ------------------------------ | --------------------------------------------------------------- | ----------- |
+| Layout da listagem   | Tabs "Ida" / "Volta" separados | IDA + VOLTA simultâneos na mesma página                         | **Figma**   |
+| CTA do card de voo   | "Adicionar voo"                | "Selecionar"                                                    | **Figma**   |
+| Expansão de tarifas  | Inline dentro do card          | Modal separado "Escolha como quer voar"                         | **Figma**   |
+| Nomes das tarifas    | Econômica Light/Standard/Plus  | Light / Classic / Flex                                          | **Figma**   |
+| Seção 2 do pagamento | Slider de Tribz (igual hotel)  | Seleção de método de pagamento (Pix / Boleto / Cartão / Pontos) | **Figma**   |
+| Filtro Paradas       | Radio (Direto / 1 / 2+)        | Checkbox (Direta / 1 ou mais paradas)                           | **Figma**   |
+| Filtro Bagagem       | Toggle                         | Checkbox                                                        | **Figma**   |
+
+

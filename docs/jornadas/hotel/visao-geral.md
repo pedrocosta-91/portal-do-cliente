@@ -18,20 +18,23 @@ Permitir que o usuário busque, compare e reserve hospedagens dentro do Portal d
 ## Fluxo completo
 
 ```
-Home (busca) → Resultados → Drawer de Quartos → PDP do Hotel → Pagamento → Confirmação
+Home (busca) → Resultados → Drawer de Quartos → PDP do Hotel → Carrinho → Pagamento → Confirmação
 ```
 
-> **Nota:** O Figma introduz um passo intermediário não detalhado no PRD original: o **Drawer de Quartos** abre diretamente a partir do card de resultado, permitindo visualizar quartos disponíveis antes de ir para o PDP completo.
+> **Nota 1:** O Figma introduz um passo intermediário não detalhado no PRD original: o **Drawer de Quartos** abre diretamente a partir do card de resultado, permitindo visualizar quartos disponíveis antes de ir para o PDP completo.
+
+> **Nota 2 (2026-04-23):** O botão "Reservar" no Drawer de Quartos e no PDP agora **adiciona o item ao carrinho** e navega para `/carrinho`, não mais para `/pagamento-hotel` diretamente. O carrinho é o novo passo obrigatório antes do pagamento.
 
 
-| Passo | Tela                          | Rota                 | Arquivo                                 |
-| ----- | ----------------------------- | -------------------- | --------------------------------------- |
-| 1     | Home — Busca de Hotel         | `/`                  | `src/app/pages/HomePage.tsx`            |
-| 2     | Resultados de Hotel           | `/resultados-hotel`  | `src/app/pages/SearchResults.tsx`       |
-| 2.5   | Drawer de Quartos *(overlay)* | `/resultados-hotel`  | Componente overlay sobre SearchResults  |
-| 3     | Detalhe do Hotel (PDP)        | `/hotel`             | `src/app/pages/HotelDetails.tsx`        |
-| 4     | Pagamento                     | `/pagamento-hotel`   | `src/app/pages/Payment.tsx`             |
-| 5     | Confirmação                   | `/confirmacao-hotel` | `src/app/pages/BookingConfirmation.tsx` |
+| Passo | Tela                          | Rota                       | Arquivo                                 |
+| ----- | ----------------------------- | -------------------------- | --------------------------------------- |
+| 1     | Home — Busca de Hotel         | `/`                        | `src/app/pages/HomePage.tsx`            |
+| 2     | Resultados de Hotel           | `/resultados-hotel`        | `src/app/pages/SearchResults.tsx`       |
+| 2.5   | Drawer de Quartos *(overlay)* | `/resultados-hotel`        | Componente overlay sobre SearchResults  |
+| 3     | Detalhe do Hotel (PDP)        | `/hotel`                   | `src/app/pages/HotelDetails.tsx`        |
+| 4     | **Carrinho** *(novo)*         | `/carrinho?services=hotel` | `src/app/pages/CartPage.tsx`            |
+| 5     | Pagamento                     | `/pagamento-hotel`         | `src/app/pages/Payment.tsx`             |
+| 6     | Confirmação                   | `/confirmacao-hotel`       | `src/app/pages/BookingConfirmation.tsx` |
 
 
 ---

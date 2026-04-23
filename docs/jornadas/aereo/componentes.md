@@ -83,13 +83,13 @@
 #### Props
 
 
-| Prop             | Tipo                                             | Obrigatório | Descrição                                    |
-| ---------------- | ------------------------------------------------ | ----------- | -------------------------------------------- |
-| `flight`         | `FlightResult`                                   | Sim         | Dados do voo com tarifas disponíveis         |
-| `isOpen`         | `boolean`                                        | Sim         | Controla visibilidade                        |
-| `onClose`        | `() => void`                                     | Sim         | Fecha o modal                                |
-| `onAdvance`      | `(tarifa: 'light' | 'classic' | 'flex') => void` | Sim         | Avança para pagamento com tarifa selecionada |
-| `currencyConfig` | `CurrencyConfig`                                 | Sim         | Configuração de moeda                        |
+| Prop             | Tipo              | Obrigatório | Descrição                            |
+| ---------------- | ----------------- | ----------- | ------------------------------------ |
+| `flight`         | `FlightResult`    | Sim         | Dados do voo com tarifas disponíveis |
+| `isOpen`         | `boolean`         | Sim         | Controla visibilidade                |
+| `onClose`        | `() => void`      | Sim         | Fecha o modal                        |
+| `onAdvance`      | `(tarifa: 'light' | 'classic'   | 'flex') => void`                     |
+| `currencyConfig` | `CurrencyConfig`  | Sim         | Configuração de moeda                |
 
 
 #### Estrutura visual

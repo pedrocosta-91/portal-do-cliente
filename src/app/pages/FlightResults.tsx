@@ -1,5 +1,6 @@
 import { useState, useRef, type ReactNode } from "react";
 import { useSearchParams, useNavigate } from "react-router";
+import { useCart } from "../../lib/cartContext";
 import { Footer } from "../components/Footer";
 import { BrandLogo, UserActions } from "../components/Header";
 import {
@@ -1702,8 +1703,10 @@ export default function FlightResults() {
   const adults = searchParams.get("adultos") || "1";
   const tripType = searchParams.get("tipo") || "Ida e Volta";
 
+  const { addItem } = useCart();
   const [selectedIdaFlight, setSelectedIdaFlight] = useState<string | null>(null);
   const [selectedVoltaFlight, setSelectedVoltaFlight] = useState<string | null>(null);
+  const [selectedTarifa, setSelectedTarifa] = useState<string>("light");
   const [sortBy, setSortBy] = useState("Mais relevantes");
   const [flightDetailsModal, setFlightDetailsModal] = useState<{ flight: FlightResult; type: "Ida" | "Volta" } | null>(null);
   const [fareModal, setFareModal] = useState<{ flight: FlightResult; type: "Ida" | "Volta" } | null>(null);
@@ -1762,7 +1765,8 @@ export default function FlightResults() {
         <FlightFareModal
           flight={fareModal.flight}
           onClose={() => setFareModal(null)}
-          onConfirm={(_fareId) => {
+          onConfirm={(fareId) => {
+            setSelectedTarifa(fareId);
             if (fareModal.type === "Ida") setSelectedIdaFlight(fareModal.flight.id);
             else setSelectedVoltaFlight(fareModal.flight.id);
             setFareModal(null);
@@ -1859,11 +1863,28 @@ export default function FlightResults() {
             {canContinue && (
               <div className="flex justify-center pt-[8px]">
                 <button
-                  onClick={() =>
-                    navigate(
-                      `/pagamento-aereo?origem=${encodeURIComponent(origin)}&destino=${encodeURIComponent(destination)}&ida=${departDate}&volta=${returnDate || ""}&adultos=${adults}&tipo=${encodeURIComponent(tripType)}&idaVoo=${selectedIdaFlight || ""}&voltaVoo=${selectedVoltaFlight || ""}`
-                    )
-                  }
+                  onClick={() => {
+                    const idaFlight = [...MOCK_FLIGHTS_IDA, ...MOCK_FLIGHTS_VOLTA].find(f => f.id === selectedIdaFlight);
+                    const voltaFlight = [...MOCK_FLIGHTS_IDA, ...MOCK_FLIGHTS_VOLTA].find(f => f.id === selectedVoltaFlight);
+                    addItem({
+                      id: `flight-${Date.now()}`,
+                      type: "flight",
+                      airline: idaFlight?.airline || "Companhia",
+                      origin,
+                      destination,
+                      departDate,
+                      returnDate: returnDate || "",
+                      tripType,
+                      tarifa: selectedTarifa,
+                      passengers: adults,
+                      price: String(idaFlight?.totalPrice || 0),
+                      currency: "Tribz",
+                      idaVoo: selectedIdaFlight || "",
+                      voltaVoo: selectedVoltaFlight || "",
+                      offerExpiresAt: Date.now() + 20 * 60 * 1000,
+                    });
+                    navigate(`/carrinho?services=flight`);
+                  }}
                   className="bg-[#12a594] flex items-center gap-[8px] px-[32px] py-[14px] rounded-full hover:bg-[#0f8c7d] transition-colors shadow-lg"
                 >
                   <span className="text-[16px] font-medium text-white">Continuar para pagamento</span>

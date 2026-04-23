@@ -20,6 +20,7 @@ export interface Room {
 interface HotelRoomsDrawerProps {
   isOpen: boolean;
   onClose: () => void;
+  onReserve?: (room: Room) => void;
   hotel: {
     name: string;
     image: string;
@@ -52,6 +53,7 @@ function FacilityIcon({ type }: { type: RoomFacility["type"] }) {
 export function HotelRoomsDrawer({
   isOpen,
   onClose,
+  onReserve,
   hotel,
   rooms,
   searchParams,
@@ -238,7 +240,10 @@ export function HotelRoomsDrawer({
                           Total: {room.totalPrice} Tribz
                         </p>
                       </div>
-                      <button className="bg-[#12a594] flex gap-[4px] h-[24px] items-center justify-center px-[8px] rounded-full w-full hover:opacity-90 transition-opacity cursor-pointer">
+                      <button
+                        onClick={() => onReserve?.(room)}
+                        className="bg-[#12a594] flex gap-[4px] h-[24px] items-center justify-center px-[8px] rounded-full w-full hover:opacity-90 transition-opacity cursor-pointer"
+                      >
                         <p className="text-white text-[12px] font-medium leading-[16px] tracking-[0.04px] whitespace-nowrap">
                           Reservar
                         </p>

@@ -8,6 +8,7 @@ import FlightResults from "./pages/FlightResults";
 import FlightPayment from "./pages/FlightPayment";
 import FlightBookingConfirmation from "./pages/FlightBookingConfirmation";
 import ProfilePage from "./pages/ProfilePage";
+import CartPage from "./pages/CartPage";
 
 export const router = createBrowserRouter([
   {
@@ -49,5 +50,9 @@ export const router = createBrowserRouter([
   {
     path: "/confirmacao-aereo",
     Component: FlightBookingConfirmation,
+  },
+  {
+    path: "/carrinho",
+    Component: CartPage,
   },
 ]);
