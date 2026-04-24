@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router";
-import { Bell, ShoppingCart } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import svgPaths from "../../imports/svg-4cv1bqd2th";
 import { useCart } from "../../lib/cartContext";
 
@@ -192,10 +192,8 @@ function Navigation({
 
 export function UserActions({
   avatarColor = "#12a594",
-  bellColor = "#e8e8ec",
 }: {
   avatarColor?: string;
-  bellColor?: string;
 }) {
   const navigate = useNavigate();
   const { items } = useCart();
@@ -243,20 +241,12 @@ export function UserActions({
         </div>
       </button>
 
-      {/* Bell button */}
-      <button
-        className="flex items-center justify-center rounded-full shrink-0 size-12 hover:bg-muted transition-colors"
-        style={{ backgroundColor: bellColor }}
-      >
-        <Bell size={20} className="text-foreground" strokeWidth={1.5} />
-      </button>
-
       {/* Cart button */}
       <button
         onClick={() => navigate("/carrinho")}
-        className="relative flex items-center justify-center rounded-full shrink-0 size-12 bg-card shadow-[0px_4px_16px_0px_rgba(0,0,0,0.1),0px_3px_12px_0px_rgba(0,0,0,0.1),0px_2px_3px_0px_rgba(0,0,51,0.06)] hover:bg-muted transition-colors"
+        className="group relative flex items-center justify-center rounded-full shrink-0 size-12 bg-card shadow-[0px_4px_16px_0px_rgba(0,0,0,0.1),0px_3px_12px_0px_rgba(0,0,0,0.1),0px_2px_3px_0px_rgba(0,0,51,0.06)] hover:bg-primary transition-colors"
       >
-        <ShoppingCart size={20} strokeWidth={1.5} className="text-foreground" />
+        <ShoppingCart size={20} strokeWidth={1.5} className="text-foreground group-hover:text-white transition-colors" />
         {items.length > 0 && (
           <span className="absolute -top-1 -right-1 bg-primary text-white rounded-full size-4 flex items-center justify-center text-[10px] font-medium leading-none">
             {items.length}
@@ -284,7 +274,6 @@ export function Header({
   const { pathname } = useLocation();
   const isProfileSection = pathname.startsWith("/minha-conta");
   const avatarColor = "#12a594";
-  const bellColor = isProfileSection ? "#f9f9fb" : "#e8e8ec";
 
   return (
     <div className="flex items-center justify-between p-8 relative shrink-0 w-full max-w-[1440px] mx-auto">
@@ -296,7 +285,7 @@ export function Header({
         onPassagensClick={onPassagensClick}
         activeOverride={activeCategory}
       />
-      <UserActions avatarColor={avatarColor} bellColor={bellColor} />
+      <UserActions avatarColor={avatarColor} />
     </div>
   );
 }

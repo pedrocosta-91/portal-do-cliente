@@ -1872,8 +1872,16 @@ export default function FlightResults() {
                       airline: idaFlight?.airline || "Companhia",
                       origin,
                       destination,
+                      originCode: idaFlight?.originCode || "",
+                      destinationCode: idaFlight?.destinationCode || "",
                       departDate,
                       returnDate: returnDate || "",
+                      departureTime: idaFlight?.departureTime || "",
+                      arrivalTime: idaFlight?.arrivalTime || "",
+                      durationHours: idaFlight?.durationHours || 0,
+                      durationMins: idaFlight?.durationMins || 0,
+                      stops: idaFlight?.stops ?? 0,
+                      hasCheckedBag: idaFlight?.hasCheckedBag ?? false,
                       tripType,
                       tarifa: selectedTarifa,
                       passengers: adults,
@@ -1882,6 +1890,15 @@ export default function FlightResults() {
                       idaVoo: selectedIdaFlight || "",
                       voltaVoo: selectedVoltaFlight || "",
                       offerExpiresAt: Date.now() + 20 * 60 * 1000,
+                      ...(voltaFlight && {
+                        returnOriginCode: voltaFlight.originCode,
+                        returnDestinationCode: voltaFlight.destinationCode,
+                        returnDepartureTime: voltaFlight.departureTime,
+                        returnArrivalTime: voltaFlight.arrivalTime,
+                        returnDurationHours: voltaFlight.durationHours,
+                        returnDurationMins: voltaFlight.durationMins,
+                        returnStops: voltaFlight.stops,
+                      }),
                     });
                     navigate(`/carrinho?services=flight`);
                   }}

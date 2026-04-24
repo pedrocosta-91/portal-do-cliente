@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router"
 import {
-  ArrowLeft,
   BedDouble,
+  Building2,
   Calendar,
+  Car,
+  ChevronLeft,
   Clock,
+  PlaneLanding,
   PlaneTakeoff,
-  ShoppingCart,
   Trash2,
   User,
 } from "lucide-react"
@@ -56,29 +58,50 @@ function CountdownBadge({ expiresAt }: { expiresAt: number }) {
 // Hotel card
 // ---------------------------------------------------------------------------
 
+function hotelQualityLabel(rating: number): string {
+  if (rating >= 9) return "Excepcional"
+  if (rating >= 8) return "Ótimo"
+  if (rating >= 7) return "Muito bom"
+  if (rating >= 6) return "Bom"
+  return "Confortável"
+}
+
+function formatHotelDate(dateStr: string): string {
+  if (!dateStr) return "—"
+  const [y, m, d] = dateStr.split("-").map(Number)
+  return `${String(d).padStart(2, "0")} ${MONTHS_SHORT[m - 1]} ${y}`
+}
+
 function HotelCard({ item, onRemove }: { item: HotelCartItem; onRemove: () => void }) {
-  const nights = parseInt(item.noites) || 1
-  const checkInFmt = item.checkIn.split("-").reverse().join("/")
-  const checkOutFmt = item.checkOut.split("-").reverse().join("/")
+  const adultos = parseInt(item.adultos) || 1
+  const quartos = parseInt(item.quarto) || 1
+  const checkInFmt = formatHotelDate(item.checkIn)
+  const checkOutFmt = formatHotelDate(item.checkOut)
+  const qualityLabel = hotelQualityLabel(item.hotelRating)
 
   return (
-    <div className="bg-white rounded-2xl p-6 flex flex-col gap-4 shadow-[0px_4px_16px_0px_rgba(0,0,0,0.1),0px_3px_12px_0px_rgba(0,0,0,0.1),0px_2px_3px_0px_rgba(0,0,51,0.06)]">
+    <div className="bg-white rounded-2xl p-4 flex flex-col gap-4 shadow-[0px_4px_16px_0px_rgba(0,0,0,0.1),0px_3px_12px_0px_rgba(0,0,0,0.1),0px_2px_3px_0px_rgba(0,0,51,0.06)]">
       {/* Header row */}
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="w-16 h-16 rounded-lg bg-[rgba(0,0,51,0.06)] shrink-0 flex items-center justify-center overflow-hidden">
-            <BedDouble size={24} strokeWidth={1.5} className="text-muted-foreground" />
-          </div>
-          <div className="flex flex-col gap-1">
-            <p className="text-[16px] font-medium text-foreground leading-6">{item.hotelName}</p>
-            <div className="flex items-center gap-2">
-              <span className="text-[12px] font-medium bg-primary text-white px-2 py-0.5 rounded-[4px]">
-                {item.hotelRating.toFixed(1)}
-              </span>
-              <span className="text-[14px] text-muted-foreground">{item.hotelCity}</span>
-            </div>
+      <div className="flex items-start gap-3">
+        {/* Thumbnail */}
+        <div className="size-[64px] shrink-0 bg-[rgba(0,0,51,0.06)] flex items-center justify-center overflow-hidden">
+          <BedDouble size={24} strokeWidth={1.5} className="text-muted-foreground" />
+        </div>
+
+        {/* Hotel info */}
+        <div className="flex flex-col gap-1 flex-1 min-w-0">
+          <p className="text-[20px] font-medium text-foreground leading-7 tracking-[-0.08px]">{item.hotelName}</p>
+          <div className="flex items-center gap-[6px]">
+            <span className="text-[12px] font-medium bg-primary text-white px-[6px] py-[2px] rounded-[4px] shrink-0">
+              {item.hotelRating.toFixed(1)}
+            </span>
+            <span className="text-[14px] text-muted-foreground leading-5 shrink-0">{qualityLabel}</span>
+            <div className="w-px h-4 bg-border shrink-0" />
+            <span className="text-[14px] text-muted-foreground leading-5">{item.hotelCity}</span>
           </div>
         </div>
+
+        {/* Remove button */}
         <button
           onClick={onRemove}
           className="flex items-center justify-center size-[32px] rounded-full border border-[rgba(0,8,48,0.27)] hover:bg-muted transition-colors shrink-0"
@@ -89,36 +112,115 @@ function HotelCard({ item, onRemove }: { item: HotelCartItem; onRemove: () => vo
 
       <Separator />
 
-      {/* Room details */}
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex flex-col gap-3 flex-1">
-          <p className="text-[14px] font-medium text-foreground leading-5">{item.roomName}</p>
-          <div className="flex flex-wrap gap-2">
+      {/* Room details + price */}
+      <div className="flex items-end gap-4">
+        <div className="flex flex-col gap-3 flex-1 min-w-0">
+          <p className="text-[16px] font-medium text-foreground leading-6">{item.roomName}</p>
+
+          {/* Amenities */}
+          <div className="flex items-center gap-[9px] flex-wrap">
             {item.hasFreeCancel && (
-              <span className="text-[12px] px-2 py-0.5 rounded-[4px] bg-[rgba(0,164,51,0.1)] text-[rgba(0,113,63,0.87)] font-medium">
-                Cancelamento grátis
+              <span className="text-[12px] font-medium px-[6px] py-[2px] rounded-[4px] bg-[rgba(0,164,51,0.1)] text-[rgba(0,113,63,0.87)]">
+                Cancelamento Grátis
               </span>
+            )}
+            {item.hasFreeCancel && item.hasBreakfast && (
+              <div className="w-px h-4 bg-border shrink-0" />
             )}
             {item.hasBreakfast && (
-              <span className="text-[12px] px-2 py-0.5 rounded-[4px] bg-[rgba(0,179,238,0.12)] text-[#00749e] font-medium">
-                Café da manhã
-              </span>
+              <span className="text-[14px] text-muted-foreground leading-5">Café da manhã</span>
             )}
           </div>
-          <div className="flex flex-wrap gap-4 text-[13px] text-muted-foreground">
-            <span className="flex items-center gap-1">
-              <Calendar size={13} strokeWidth={1.5} />
-              {checkInFmt} → {checkOutFmt} · {nights} {nights === 1 ? "noite" : "noites"}
+
+          {/* Date + guests */}
+          <div className="flex items-center gap-[9px] flex-wrap">
+            <span className="flex items-center gap-[6px] text-[14px] text-muted-foreground leading-5">
+              <Calendar size={14} strokeWidth={1.5} />
+              {checkInFmt} - {checkOutFmt}
             </span>
-            <span className="flex items-center gap-1">
-              <User size={13} strokeWidth={1.5} />
-              {item.adultos} {parseInt(item.adultos) === 1 ? "hóspede" : "hóspedes"}
+            <div className="w-px h-4 bg-border shrink-0" />
+            <span className="flex items-center gap-[6px] text-[14px] text-muted-foreground leading-5">
+              <User size={14} strokeWidth={1.5} />
+              {adultos} {adultos === 1 ? "adulto" : "adultos"} em {quartos} {quartos === 1 ? "quarto" : "quartos"}
             </span>
           </div>
         </div>
-        <div className="text-right shrink-0">
-          <p className="text-[24px] font-normal text-foreground leading-[30px]">{item.price}</p>
-          <p className="text-[12px] text-muted-foreground">{item.currency}</p>
+
+        {/* Price */}
+        <p className="text-[24px] font-normal text-foreground leading-[30px] tracking-[-0.1px] text-right w-[101px] shrink-0">
+          {item.currency} {item.price}
+        </p>
+      </div>
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Flight card helpers
+// ---------------------------------------------------------------------------
+
+const MONTHS_SHORT = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"]
+const WEEKDAYS_SHORT = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"]
+
+function formatFlightDate(dateStr: string): string {
+  if (!dateStr) return "—"
+  const [y, m, d] = dateStr.split("-").map(Number)
+  const date = new Date(y, m - 1, d)
+  return `${d} ${MONTHS_SHORT[m - 1]}, ${WEEKDAYS_SHORT[date.getDay()]}`
+}
+
+function formatDuration(h: number, m: number): string {
+  return `${h}h${String(m).padStart(2, "0")}`
+}
+
+function FlightLeg({
+  label,
+  originCode,
+  destCode,
+  date,
+  departTime,
+  arrivalTime,
+  duration,
+  stops,
+}: {
+  label: string
+  originCode: string
+  destCode: string
+  date: string
+  departTime: string
+  arrivalTime: string
+  duration: string
+  stops: number
+}) {
+  return (
+    <div className="flex flex-col gap-4 flex-1 min-w-0">
+      <p className="text-[14px] text-muted-foreground leading-5">{label}</p>
+      <div className="flex items-center gap-3">
+        {/* Origin */}
+        <div className="flex flex-col items-end gap-px shrink-0">
+          <p className="text-[12px] font-medium text-foreground leading-4 tracking-[0.04px] w-[48px] text-right">{originCode}</p>
+          <p className="text-[12px] font-light text-muted-foreground leading-4 tracking-[0.04px] w-[80px] text-right">{date}</p>
+          <p className="text-[16px] font-medium text-muted-foreground leading-6 text-right">{departTime}</p>
+        </div>
+
+        {/* Route visualization */}
+        <div className="flex items-center gap-2 shrink-0">
+          <PlaneTakeoff size={16} strokeWidth={1.5} className="text-muted-foreground" />
+          <div className="flex flex-col items-center gap-0.5">
+            <div className="w-[60px] h-px bg-[rgba(0,0,47,0.15)]" />
+            <p className="text-[12px] font-light text-muted-foreground leading-4 tracking-[0.04px]">{duration}</p>
+            <p className="text-[12px] font-medium text-muted-foreground leading-4 tracking-[0.04px]">
+              {stops === 0 ? "Direto" : `${stops} parada${stops > 1 ? "s" : ""}`}
+            </p>
+          </div>
+          <PlaneLanding size={16} strokeWidth={1.5} className="text-muted-foreground" />
+        </div>
+
+        {/* Destination */}
+        <div className="flex flex-col items-start gap-px shrink-0">
+          <p className="text-[12px] font-medium text-foreground leading-4 tracking-[0.04px] w-[48px]">{destCode}</p>
+          <p className="text-[12px] font-light text-muted-foreground leading-4 tracking-[0.04px] w-[80px]">{date}</p>
+          <p className="text-[16px] font-medium text-muted-foreground leading-6">{arrivalTime}</p>
         </div>
       </div>
     </div>
@@ -130,22 +232,25 @@ function HotelCard({ item, onRemove }: { item: HotelCartItem; onRemove: () => vo
 // ---------------------------------------------------------------------------
 
 function FlightCard({ item, onRemove }: { item: FlightCartItem; onRemove: () => void }) {
-  const initials = item.airline.slice(0, 2).toUpperCase()
-  const isRoundTrip = item.tripType !== "somente_ida" && item.returnDate
+  const isRoundTrip = item.tripType !== "somente_ida" && !!item.returnDate
+  const passengers = parseInt(item.passengers)
 
   return (
-    <div className="bg-white rounded-2xl p-6 flex flex-col gap-4 shadow-[0px_4px_16px_0px_rgba(0,0,0,0.1),0px_3px_12px_0px_rgba(0,0,0,0.1),0px_2px_3px_0px_rgba(0,0,51,0.06)]">
-      {/* Header row */}
+    <div className="bg-white rounded-2xl p-4 flex flex-col gap-4 shadow-[0px_4px_16px_0px_rgba(0,0,0,0.1),0px_3px_12px_0px_rgba(0,0,0,0.1),0px_2px_3px_0px_rgba(0,0,51,0.06)]">
+      {/* Header */}
       <div className="flex items-start justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="w-16 h-16 rounded-lg bg-[rgba(0,0,51,0.06)] shrink-0 flex items-center justify-center">
-            <span className="text-[18px] font-medium text-foreground">{initials}</span>
-          </div>
-          <div className="flex flex-col gap-1">
-            <p className="text-[16px] font-medium text-foreground leading-6">
-              {item.origin} → {item.destination}
+        <div className="flex flex-col gap-[6px]">
+          <p className="text-[20px] font-medium text-foreground leading-7 tracking-[-0.08px]">
+            Voo para {item.destinationCode || item.destination}
+          </p>
+          <div className="flex items-center gap-[9px]">
+            <p className="text-[14px] text-muted-foreground leading-5">
+              {isRoundTrip ? "Ida e Volta" : "Somente Ida"}
             </p>
-            <p className="text-[14px] text-muted-foreground">{item.airline}</p>
+            <div className="w-px h-4 bg-border" />
+            <p className="text-[14px] text-muted-foreground leading-5">
+              {passengers} {passengers === 1 ? "pessoa" : "pessoas"}
+            </p>
           </div>
         </div>
         <button
@@ -158,32 +263,55 @@ function FlightCard({ item, onRemove }: { item: FlightCartItem; onRemove: () => 
 
       <Separator />
 
-      {/* Flight details */}
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex flex-col gap-3 flex-1">
-          <div className="flex flex-wrap gap-2">
-            <span className="text-[12px] px-2 py-0.5 rounded-[4px] bg-primary text-white font-medium capitalize">
-              {item.tarifa}
-            </span>
-            <span className="text-[12px] px-2 py-0.5 rounded-[4px] bg-[rgba(0,0,51,0.06)] text-foreground font-medium">
-              {isRoundTrip ? "Ida e volta" : "Somente ida"}
-            </span>
+      {/* Body */}
+      <div className="flex items-end gap-4">
+        <div className="flex flex-col gap-[14px] flex-1 min-w-0">
+          {/* Legs */}
+          <div className="flex gap-4 items-start">
+            <FlightLeg
+              label="Voo de Ida"
+              originCode={item.originCode || item.origin.slice(0, 3).toUpperCase()}
+              destCode={item.destinationCode || item.destination.slice(0, 3).toUpperCase()}
+              date={formatFlightDate(item.departDate)}
+              departTime={item.departureTime}
+              arrivalTime={item.arrivalTime}
+              duration={formatDuration(item.durationHours, item.durationMins)}
+              stops={item.stops}
+            />
+            {isRoundTrip && (
+              <>
+                <div className="w-px self-stretch bg-border shrink-0" />
+                <FlightLeg
+                  label="Voo de Volta"
+                  originCode={item.returnOriginCode || item.destinationCode || ""}
+                  destCode={item.returnDestinationCode || item.originCode || ""}
+                  date={formatFlightDate(item.returnDate)}
+                  departTime={item.returnDepartureTime || ""}
+                  arrivalTime={item.returnArrivalTime || ""}
+                  duration={formatDuration(item.returnDurationHours || 0, item.returnDurationMins || 0)}
+                  stops={item.returnStops ?? 0}
+                />
+              </>
+            )}
           </div>
-          <div className="flex flex-wrap gap-4 text-[13px] text-muted-foreground">
-            <span className="flex items-center gap-1">
-              <Calendar size={13} strokeWidth={1.5} />
-              {item.departDate}{isRoundTrip ? ` → ${item.returnDate}` : ""}
+
+          {/* Badges */}
+          <div className="flex gap-[14px] flex-wrap">
+            <span className="text-[12px] font-medium px-[6px] py-[2px] bg-[rgba(0,71,241,0.07)] text-[rgba(0,43,183,0.77)] tracking-[0.04px] leading-4">
+              Classe: {item.tarifa.charAt(0).toUpperCase() + item.tarifa.slice(1)}
             </span>
-            <span className="flex items-center gap-1">
-              <User size={13} strokeWidth={1.5} />
-              {item.passengers} {parseInt(item.passengers) === 1 ? "passageiro" : "passageiros"}
-            </span>
+            {item.hasCheckedBag && (
+              <span className="text-[12px] font-medium px-[6px] py-[2px] bg-[rgba(0,71,241,0.07)] text-[rgba(0,43,183,0.77)] tracking-[0.04px] leading-4">
+                Bagagem: 1 mala 23kg
+              </span>
+            )}
           </div>
         </div>
-        <div className="text-right shrink-0">
-          <p className="text-[24px] font-normal text-foreground leading-[30px]">{item.price}</p>
-          <p className="text-[12px] text-muted-foreground">{item.currency}</p>
-        </div>
+
+        {/* Price */}
+        <p className="text-[24px] font-normal text-foreground leading-[30px] tracking-[-0.1px] text-right w-[101px] shrink-0">
+          {item.currency} {item.price}
+        </p>
       </div>
     </div>
   )
@@ -312,36 +440,39 @@ function CartSummaryCard({
 }
 
 // ---------------------------------------------------------------------------
-// Empty state
+// Service card (empty state)
 // ---------------------------------------------------------------------------
 
-function EmptyState() {
-  const navigate = useNavigate()
+function ServiceCard({
+  icon,
+  title,
+  description,
+  buttonLabel,
+  onClick,
+}: {
+  icon: React.ReactNode
+  title: string
+  description: string
+  buttonLabel: string
+  onClick: () => void
+}) {
   return (
-    <div className="flex flex-col items-center justify-center py-20 gap-6">
-      <ShoppingCart size={48} strokeWidth={1} className="text-muted-foreground" />
-      <div className="flex flex-col items-center gap-2">
-        <p className="text-[20px] font-medium text-foreground">Seu carrinho está vazio</p>
-        <p className="text-[14px] text-muted-foreground text-center max-w-[320px]">
-          Adicione hospedagens ou passagens aéreas para continuar
-        </p>
+    <div className="border border-border rounded-lg flex flex-col gap-6 p-4 flex-1 items-start">
+      <div className="flex flex-col gap-4 w-full">
+        <div className="flex gap-2 items-start w-full">
+          <div className="bg-[rgba(0,198,157,0.12)] rounded-full size-[24px] flex items-center justify-center shrink-0">
+            {icon}
+          </div>
+          <p className="text-[16px] font-medium text-foreground leading-6">{title}</p>
+        </div>
+        <p className="text-[12px] font-light text-muted-foreground leading-[16px] tracking-[0.04px]">{description}</p>
       </div>
-      <div className="flex gap-3">
-        <button
-          onClick={() => navigate("/resultados")}
-          className="flex items-center gap-2 bg-primary text-white rounded-full h-10 px-5 text-[14px] font-medium hover:opacity-90 transition-opacity"
-        >
-          <BedDouble size={16} strokeWidth={1.5} />
-          Buscar hospedagem
-        </button>
-        <button
-          onClick={() => navigate("/resultados-aereo")}
-          className="flex items-center gap-2 border border-border text-foreground rounded-full h-10 px-5 text-[14px] font-medium hover:bg-muted transition-colors"
-        >
-          <PlaneTakeoff size={16} strokeWidth={1.5} />
-          Buscar passagens
-        </button>
-      </div>
+      <button
+        onClick={onClick}
+        className="bg-primary text-white rounded-full h-[32px] px-3 text-[14px] font-medium hover:opacity-90 transition-opacity"
+      >
+        {buttonLabel}
+      </button>
     </div>
   )
 }
@@ -425,29 +556,62 @@ export default function CartPage() {
 
       {/* Content */}
       <main className="flex-1 w-full max-w-[1440px] mx-auto px-8 py-8">
-        {items.length === 0 ? (
-          <EmptyState />
-        ) : (
-          <div className="flex gap-8 items-start">
-            {/* Left column */}
-            <div className="flex flex-col gap-6 flex-1 min-w-0">
-              {/* Top row: back + countdown */}
-              <div className="flex items-center justify-between">
-                <button
-                  onClick={() => navigate(-1)}
-                  className="flex items-center gap-2 text-[14px] text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <ArrowLeft size={16} strokeWidth={1.5} />
-                  Voltar para busca
-                </button>
-                <CountdownBadge expiresAt={firstExpiry} />
+        <div className="flex gap-8 items-start">
+          {/* Left column */}
+          <div className="flex flex-col gap-4 w-[848px] shrink-0">
+            {/* Back button row */}
+            <div className="flex items-center justify-between">
+              <button
+                onClick={() => navigate(-1)}
+                className="flex items-center gap-3 h-[40px] px-4 rounded-md text-[16px] text-[#60646c] hover:text-foreground transition-colors"
+              >
+                <ChevronLeft size={18} strokeWidth={1.5} />
+                Voltar para busca
+              </button>
+              {items.length > 0 && <CountdownBadge expiresAt={firstExpiry} />}
+            </div>
+
+            <h1 className="text-[24px] font-normal text-foreground leading-[30px] tracking-[-0.1px]">
+              Carrinho ({items.length})
+            </h1>
+
+            {items.length === 0 ? (
+              /* Empty state */
+              <div className="flex flex-col gap-8">
+                <div className="flex flex-col gap-2">
+                  <p className="text-[18px] font-medium text-foreground leading-[26px] tracking-[-0.04px]">
+                    Você ainda não adicionou produtos no seu carrinho
+                  </p>
+                  <p className="text-[12px] font-light text-muted-foreground leading-[16px] tracking-[0.04px]">
+                    Monte a viagem do seu jeito e resolva tudo na mesma compra.
+                  </p>
+                </div>
+                <div className="flex gap-4 items-stretch w-full">
+                  <ServiceCard
+                    icon={<PlaneTakeoff size={16} strokeWidth={1.5} className="text-primary" />}
+                    title="Passagens"
+                    description="Encontre os melhores voos disponíveis"
+                    buttonLabel="Ver passagens"
+                    onClick={() => navigate("/resultados-aereo")}
+                  />
+                  <ServiceCard
+                    icon={<Building2 size={16} strokeWidth={1.5} className="text-primary" />}
+                    title="Hospedagens"
+                    description="Encontre as melhores opções com a nossa curadoria"
+                    buttonLabel="Ver hospedagens"
+                    onClick={() => navigate("/resultados")}
+                  />
+                  <ServiceCard
+                    icon={<Car size={16} strokeWidth={1.5} className="text-primary" />}
+                    title="Aluguel de Carro"
+                    description="Faça o seu próprio roteiro alugando um carro."
+                    buttonLabel="Ver passeios"
+                    onClick={() => navigate("/")}
+                  />
+                </div>
               </div>
-
-              <h1 className="text-[24px] font-medium text-foreground leading-[30px]">
-                Carrinho ({items.length})
-              </h1>
-
-              {/* Item cards */}
+            ) : (
+              /* Filled state */
               <div className="flex flex-col gap-4">
                 {items.map((item) =>
                   item.type === "hotel" ? (
@@ -456,28 +620,27 @@ export default function CartPage() {
                     <FlightCard key={item.id} item={item as FlightCartItem} onRemove={() => handleRemove(item)} />
                   )
                 )}
+                <CrossSellSection items={items} />
+                <div className="flex justify-end">
+                  <button
+                    onClick={handleCheckout}
+                    className="bg-primary text-white rounded-full h-10 w-[240px] text-[14px] font-medium hover:opacity-90 transition-opacity"
+                  >
+                    Finalizar Compra
+                  </button>
+                </div>
               </div>
+            )}
+          </div>
 
-              <CrossSellSection items={items} />
-
-              {/* Bottom CTA */}
-              <div className="flex justify-end">
-                <button
-                  onClick={handleCheckout}
-                  className="bg-primary text-white rounded-full h-10 w-[240px] text-[14px] font-medium hover:opacity-90 transition-opacity"
-                >
-                  Finalizar Compra
-                </button>
-              </div>
-            </div>
-
-            {/* Right column */}
-            <div className="w-[400px] shrink-0 pt-14">
+          {/* Right column — only when cart has items */}
+          {items.length > 0 && (
+            <div className="w-[400px] shrink-0 pt-[88px]">
               <p className="text-[18px] font-medium text-foreground mb-4">Resumo do pagamento</p>
               <CartSummaryCard items={items} onCheckout={handleCheckout} />
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </main>
     </div>
   )

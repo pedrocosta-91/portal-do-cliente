@@ -336,7 +336,7 @@ export function SearchSection({ tab }: { tab?: Tab } = {}) {
             </div>
           </button>
           {showCheckOutPicker && (
-            <DatePicker value={checkOutDate} onChange={(date) => setCheckOutDate(date)} show={showCheckOutPicker} setShow={setShowCheckOutPicker} triggerRect={checkOutButtonRef.current?.getBoundingClientRect() || null} />
+            <DatePicker value={checkOutDate} onChange={(date) => setCheckOutDate(date)} show={showCheckOutPicker} setShow={setShowCheckOutPicker} triggerRect={checkOutButtonRef.current?.getBoundingClientRect() || null} defaultMonth={checkInDate} />
           )}
         </div>
 
@@ -558,7 +558,7 @@ export function SearchSection({ tab }: { tab?: Tab } = {}) {
               </div>
             </button>
             {showReturnPicker && (
-              <DatePicker value={returnDate} onChange={(date) => setReturnDate(date)} show={showReturnPicker} setShow={setShowReturnPicker} triggerRect={returnButtonRef.current?.getBoundingClientRect() || null} />
+              <DatePicker value={returnDate} onChange={(date) => setReturnDate(date)} show={showReturnPicker} setShow={setShowReturnPicker} triggerRect={returnButtonRef.current?.getBoundingClientRect() || null} defaultMonth={departDate} />
             )}
           </div>
         )}

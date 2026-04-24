@@ -26,8 +26,16 @@ export type FlightCartItem = {
   airline: string
   origin: string
   destination: string
+  originCode: string
+  destinationCode: string
   departDate: string
   returnDate: string
+  departureTime: string
+  arrivalTime: string
+  durationHours: number
+  durationMins: number
+  stops: number
+  hasCheckedBag: boolean
   tripType: string
   tarifa: string
   passengers: string
@@ -36,6 +44,13 @@ export type FlightCartItem = {
   idaVoo: string
   voltaVoo: string
   offerExpiresAt: number
+  returnOriginCode?: string
+  returnDestinationCode?: string
+  returnDepartureTime?: string
+  returnArrivalTime?: string
+  returnDurationHours?: number
+  returnDurationMins?: number
+  returnStops?: number
 }
 
 export type CartItem = HotelCartItem | FlightCartItem

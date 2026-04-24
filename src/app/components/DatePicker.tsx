@@ -8,6 +8,7 @@ interface DatePickerProps {
   show: boolean;
   setShow: (show: boolean) => void;
   triggerRect?: DOMRect | null;
+  defaultMonth?: Date | null;
 }
 
 const MONTHS = [
@@ -17,12 +18,12 @@ const MONTHS = [
 
 const WEEKDAYS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 
-export function DatePicker({ value, onChange, className, show, setShow, triggerRect }: DatePickerProps) {
+export function DatePicker({ value, onChange, className, show, setShow, triggerRect, defaultMonth }: DatePickerProps) {
   const [currentMonth, setCurrentMonth] = useState(
-    value ? value.getMonth() : new Date().getMonth()
+    value ? value.getMonth() : defaultMonth ? defaultMonth.getMonth() : new Date().getMonth()
   );
   const [currentYear, setCurrentYear] = useState(
-    value ? value.getFullYear() : new Date().getFullYear()
+    value ? value.getFullYear() : defaultMonth ? defaultMonth.getFullYear() : new Date().getFullYear()
   );
 
   const getDaysInMonth = (month: number, year: number) => {
