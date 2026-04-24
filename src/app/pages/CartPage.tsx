@@ -147,9 +147,10 @@ function HotelCard({ item, onRemove }: { item: HotelCartItem; onRemove: () => vo
         </div>
 
         {/* Price */}
-        <p className="text-[24px] font-normal text-foreground leading-[30px] tracking-[-0.1px] text-right w-[101px] shrink-0">
-          {item.currency} {item.price}
-        </p>
+        <div className="flex items-baseline gap-1 justify-end shrink-0">
+          <span className="text-[24px] font-normal text-foreground leading-[30px] tracking-[-0.1px]">{formatPrice(item.price)}</span>
+          <span className="text-[16px] font-medium text-muted-foreground leading-none">{item.currency}</span>
+        </div>
       </div>
     </div>
   )
@@ -160,6 +161,12 @@ function HotelCard({ item, onRemove }: { item: HotelCartItem; onRemove: () => vo
 // ---------------------------------------------------------------------------
 
 const MONTHS_SHORT = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"]
+
+function formatPrice(price: string): string {
+  const num = parseFloat(price.replace(/\./g, "").replace(",", "."))
+  if (isNaN(num)) return price
+  return num.toLocaleString("pt-BR", { minimumFractionDigits: 0, maximumFractionDigits: 0 })
+}
 const WEEKDAYS_SHORT = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"]
 
 function formatFlightDate(dateStr: string): string {
@@ -309,9 +316,10 @@ function FlightCard({ item, onRemove }: { item: FlightCartItem; onRemove: () => 
         </div>
 
         {/* Price */}
-        <p className="text-[24px] font-normal text-foreground leading-[30px] tracking-[-0.1px] text-right w-[101px] shrink-0">
-          {item.currency} {item.price}
-        </p>
+        <div className="flex items-baseline gap-1 justify-end shrink-0">
+          <span className="text-[24px] font-normal text-foreground leading-[30px] tracking-[-0.1px]">{formatPrice(item.price)}</span>
+          <span className="text-[16px] font-medium text-muted-foreground leading-none">{item.currency}</span>
+        </div>
       </div>
     </div>
   )
@@ -635,8 +643,8 @@ export default function CartPage() {
 
           {/* Right column — only when cart has items */}
           {items.length > 0 && (
-            <div className="w-[400px] shrink-0 pt-[88px]">
-              <p className="text-[18px] font-medium text-foreground mb-4">Resumo do pagamento</p>
+            <div className="w-[400px] shrink-0 pt-[56px]">
+              <p className="text-[24px] font-normal text-foreground leading-[30px] tracking-[-0.1px] mb-4">Resumo do pagamento</p>
               <CartSummaryCard items={items} onCheckout={handleCheckout} />
             </div>
           )}
